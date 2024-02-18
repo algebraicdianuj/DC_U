@@ -1,0 +1,2 @@
+mia_score,retain_acc,forget_acc,unlearning_metric,overfitting_metric,unlearning_time
+50.1,80.4074074074074,74.17777777777778,95.91741919517517,1.450117406206335,3.916903018951416

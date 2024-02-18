@@ -1,0 +1,1 @@
+Dataset Compression Ratio: 0.8316444444444444

@@ -1,0 +1,8 @@
+Metadata-Version: 2.1
+Name: blurnn
+Version: 0.1
+Summary: BlurNN is a pytorch privacy preserving module
+Author: AILabs
+License: MIT License
+Requires: torch
+License-File: LICENSE.txt
