@@ -64,3 +64,26 @@ cd svhn_exps/vgg16
 chmod +x runner.sh
 ./runner.sh
 ```
+
+
+## Why am I Pushing for Least Epochs on Intermediate Training
+```bash
+cd whysingleepoch_intermediate_cifar10_cnn
+jupyter layer_wise_gradient.ipynb
+```
+
+
+
+## Progression of Unlearning over Multiple Rounds
+```bash
+cd svhn_cnn_UnlearningCycles
+chmod +x runner.hs
+./runner.sh
+cd ..
+cd plotting/unlearning cycles
+jupyter radar_plt.ipynb
+```
+
+
+
+
