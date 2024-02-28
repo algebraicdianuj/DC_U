@@ -72,7 +72,7 @@ cd whysingleepoch_intermediate_cifar10_cnn
 python pre_procedure.py
 python post_preprocedure.py
 python overture_to_proposed.py
-jupyter layer_wise_gradient.ipynb
+jupyter nbconvert --to notebook --execute layer_wise_gradient.ipynb --output layer_wise_gradient.ipynb
 ```
 
 
@@ -85,7 +85,10 @@ chmod +x runner.hs
 cd ..
 cd plotting/unlearning cycles
 jupyter radar_plt.ipynb
+jupyter nbconvert --to notebook --execute radar_plt.ipynb --output radar_plt.ipynb
 ```
+
+
 
 
 
