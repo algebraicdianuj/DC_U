@@ -85,6 +85,86 @@ chmod +x runner_cnn_resnet_vgg.sh
 ```
 
 
+## Effect of Size of Rememberance Sample Dataset (Images Per Class-IPC) over Performance of Unlearning
+```bash
+cd ipc_exp_cifar10
+
+# K=1
+cd ipc1
+chmod +x runner.sh
+./runner.sh
+
+# K=10
+cd ipc10
+chmod +x runner.sh
+./runner.sh
+
+# K=50
+cd ipc50
+chmod +x runner.sh
+./runner.sh
+```
+
+
+
+## Effect of different K values over different sizes of Forget set (Dataset: CIFAR-10, Model: VGG16)
+### VGG Experiments
+```bash
+cd K_evaluation
+
+# K = 45, Forgetting percentage (out of total training dataset)=1 percent
+cd cifar10_vgg16_randomforget1perc_MIcondensation_K45
+chmod +x runner.sh
+./runner.sh
+
+# K = 450, Forgetting percentage = 1 percent
+cd cifar10_vgg16_randomforget1perc_MIcondensation_K45
+chmod +x runner.sh
+./runner.sh
+
+# K = 45, Forgetting percentage = 10 percent
+cd  cifar10_vgg16_randomforget1perc_MIcondensation_K45
+chmod +x runner.sh
+./runner.sh
+
+# K=450, Forgetting percentage = 10 percent
+cd cifar10_vgg16_randomforget10perc_MIcondensation_K450
+chmod +x runner.sh
+./runner.sh
+
+# K= 450, Forgetting percentage = 50 percent
+cd cifar10_vgg16_randomforget50perc_MIcondensation_K450
+chmod +x runner.sh
+./runner.sh
+```
+
+### MLP Experiments
+#### Using Fast Distribution Matching based Dataset Condensation (Proposed) as Base
+```bash
+cd K_evaluation_FDMcondensation/mlp
+chmod +x runny.sh
+./runny.sh
+
+cd ..
+# copy the csv files with containing name 'arbitrary_uniform' from mlp/result to random_case_plotting
+# copy the csv files with containing name 'classwise' from mlp/result to classwise_plotting
+```
+
+#### Using Model Inversion based Dataset Condensation (Proposed) as Base
+```bash
+cd K_evaluation_MIcondensation/mlp
+chmod +x runny.sh
+./runny.sh
+
+cd ..
+# copy the csv files with containing name 'arbitrary_uniform' from mlp/result to random_case_plotting
+# copy the csv files with containing name 'classwise' from mlp/result to classwise_plotting
+```
+
+
+
+
+
 ## Why One Epoch is Sufficient for Intermediate Training
 ```bash
 cd whysingleepoch_intermediate_cifar10_cnn
@@ -93,6 +173,7 @@ python post_preprocedure.py
 python overture_to_proposed.py
 jupyter nbconvert --to notebook --execute layer_wise_gradient.ipynb --output layer_wise_gradient.ipynb
 ```
+
 
 
 
@@ -165,6 +246,7 @@ jupyter nbconvert --to notebook --execute plotter.ipynb --output plotter.ipynb
 ```
 
 
+##
 
 
 
