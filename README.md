@@ -69,6 +69,9 @@ chmod +x runner.sh
 ## Why am I Pushing for Least Epochs on Intermediate Training
 ```bash
 cd whysingleepoch_intermediate_cifar10_cnn
+python pre_procedure.py
+python post_preprocedure.py
+python overture_to_proposed.py
 jupyter layer_wise_gradient.ipynb
 ```
 
