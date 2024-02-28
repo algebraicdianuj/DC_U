@@ -46,7 +46,6 @@ from modular_unlearn.overfitting_metric import *
 def main():
     parser = argparse.ArgumentParser(description='Unlearning metricization')
     parser.add_argument('epochs', type=int, help='Number of Unlearning Epochs')
-    # Add more arguments as needed
     args = parser.parse_args()
 
 
@@ -217,7 +216,7 @@ def main():
     starting_time = time.time()
     combined_model=modular_unlearning(combined_model, optim_model, lr_overture,lr_intermediate,criterion, device, beggining_epochs, intermediate_epochs, final_epochs, overture_epochs, final_thr, img_syn_loader, reduced_retain_loader)
     ending_time = time.time()
-    unlearning_time=ending_time - starting_time
+    unlearning_time = ending_time - starting_time
     mia_score=measure_mia(combined_model, forget_loader,test_loader, device)
     retain_acc=test(combined_model, retain_loader, device)
     forget_acc=test(combined_model, forget_loader, device)

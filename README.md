@@ -66,7 +66,7 @@ chmod +x runner.sh
 ```
 
 
-## Why am I Pushing for Least Epochs on Intermediate Training
+## Why One Epoch is Sufficient for Intermediate Training
 ```bash
 cd whysingleepoch_intermediate_cifar10_cnn
 python pre_procedure.py
@@ -112,6 +112,37 @@ cd ..
 cd plotting/DP_competitor
 jupyter nbconvert --to notebook --execute radar_plt.ipynb --output radar_plt.ipynb
 jupyter nbconvert --to notebook --execute scatter.ipynb --output scatter.ipynb
+```
+
+
+## Unlearning and Overfitting Metrics
+```bash
+cd cifar10_vit_tiny_patch16_224_UnlearningAndOverfitting_v2
+chmod +x runner.sh
+./runner.sh
+chmod +x exp.sh
+./exp.sh
+cd ..
+# mov the csv files from cifar10_vit_tiny_patch16_224_UnlearningAndOverfitting_v2/result to plotting/unlearning_metric_and_overfitting
+jupyter nbconvert --to notebook --execute plotty.ipynb --output plotty.ipynb
+```
+
+
+## Dataset Condensation
+```bash
+cd ds_condensation_benchmarking
+# DS condensation via Distribution Matching
+python distribution_matching.py
+# DS condensation via Gradient Matching
+python gradient_matching.py
+# DS condensation via Fast Distribution Matching
+python mi_dataset_condensation_proposed_lite.py
+# DS condensation via Model Inversion
+python mi_dataset_condensation_proposed.py
+
+cd..
+# copy csv files from ds_condensation_benchmarking to plotting/dataset_condensation
+jupyter nbconvert --to notebook --execute plotter.ipynb --output plotter.ipynb
 ```
 
 
