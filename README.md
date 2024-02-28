@@ -80,12 +80,28 @@ jupyter nbconvert --to notebook --execute layer_wise_gradient.ipynb --output lay
 ## Progression of Unlearning over Multiple Rounds
 ```bash
 cd svhn_cnn_UnlearningCycles
-chmod +x runner.hs
+chmod +x runner.sh
 ./runner.sh
 cd ..
 cd plotting/unlearning cycles
 jupyter nbconvert --to notebook --execute radar_plt.ipynb --output radar_plt.ipynb
 ```
+
+
+## Unlearning over Condensed Model
+```bash
+cd cifar10_vgg16_Condensed_retraining
+chmod +x runner.sh
+./runner.sh
+cd ..
+mv cifar10_vgg16_Condensed_retraining/result/modular_unlearning.csv plotting/Unlearning_in_Condensation
+mv cifar10_vgg16_Condensed_retraining/result/recondensation_training.csv plotting/Unlearning_in_Condensation
+mv cifar10_vgg16_Condensed_retraining/result/retraining.csv plotting/Unlearning_in_Condensation
+cd plotting/Unlearning_in_Condensation
+jupyter nbconvert --to notebook --execute plotter.ipynb --output plotter.ipynb
+```
+
+
 
 
 
