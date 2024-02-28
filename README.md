@@ -84,7 +84,6 @@ chmod +x runner.hs
 ./runner.sh
 cd ..
 cd plotting/unlearning cycles
-jupyter radar_plt.ipynb
 jupyter nbconvert --to notebook --execute radar_plt.ipynb --output radar_plt.ipynb
 ```
 
