@@ -5,15 +5,15 @@ Code release for the paper "Dataset Condensation Driven Machine Unlearning".
 
 Platform: Ubuntu 22
 
-## CIFAR-10 Experiments (Table-1)
-### MLP
+## Random Forgetting (10 Percent) (Table-1)
+### MLP-CIFAR10
 ```bash
 cd cifar10_exps/mlp
 chmod +x runner.sh
 ./runner.sh
 ```
 
-### CNN
+### CNN-CIFAR10
 ```bash
 cd cifar10_exps/cnn
 chmod +x runner.sh
@@ -21,48 +21,67 @@ chmod +x runner.sh
 ```
 
 
-### RESNET18
+### RESNET18-CIFAR10
 ```bash
 cd cifar10_exps/resnet18
 chmod +x runner.sh
 ./runner.sh
 ```
 
-### VGG16
+### VGG16-CIFAR10
 ```bash
 cd cifar10_exps/vgg16
 chmod +x runner.sh
 ./runner.sh
 ```
 
-## SVHN Experiments (Table-1)
-
-### MLP
+### MLP-SVHN
 ```bash
 cd svhn_exps/mlp
 chmod +x runner.sh
 ./runner.sh
 ```
 
-### CNN
+### CNN-SVHN
 ```bash
 cd svhn_exps/cnn
 chmod +x runner.sh
 ./runner.sh
 ```
 
-### RESNET18
+### RESNET18-SVHN
 ```bash
 cd svhn_exps/resnet18
 chmod +x runner.sh
 ./runner.sh
 ```
 
-### VGG16
+### VGG16-SVHN
 ```bash
 cd svhn_exps/vgg16
 chmod +x runner.sh
 ./runner.sh
+```
+
+
+## Class-wise Forgetting
+
+### CIFAR-10
+```bash
+cd classforget_cifar10_exps
+chmod +x runner.sh
+./runner.sh
+chmod +x runner_mlp_cnn_resnet_vgg.sh
+./runner_mlp_cnn_resnet_vgg.sh
+```
+
+### SVHN
+```bash
+cd classforget_svhn_exps
+chmod +x runner.sh
+./runner.sh
+chmod +x runner_cnn_resnet_vgg.sh
+./runner_cnn_resnet_vgg.sh
 ```
 
 
