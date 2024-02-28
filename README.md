@@ -101,6 +101,18 @@ cd plotting/Unlearning_in_Condensation
 jupyter nbconvert --to notebook --execute plotter.ipynb --output plotter.ipynb
 ```
 
+## Unlearning as Alternative to Differential Privacy
+The repository: https://github.com/awslabs/fast-differential-privacy, was used as the differentially private optimizer for training of model.
+
+```bash
+cd cifar10_vgg16_DPCompetitor_v2
+chmod +x runner.sh
+./runner.sh
+cd ..
+cd plotting/DP_competitor
+jupyter nbconvert --to notebook --execute radar_plt.ipynb --output radar_plt.ipynb
+jupyter nbconvert --to notebook --execute scatter.ipynb --output scatter.ipynb
+```
 
 
 

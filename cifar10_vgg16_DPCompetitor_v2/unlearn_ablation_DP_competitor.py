@@ -356,8 +356,6 @@ def main():
     attack_result_DP=evaluate_mia(result_directory_path, dp_net_copy, img_real_data_loader, test_loader,case='DP')
     
     
-    
-    iajasidj
 
     # Assume attack_results_1 and attack_results_2 are your attack results
     attack_result_1 = attack_result_pretrained.get_result_with_max_auc()
