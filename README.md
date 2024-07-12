@@ -253,13 +253,13 @@ jupyter nbconvert --to notebook --execute plotter.ipynb --output plotter.ipynb
 
 ## SOTA Unlearning Implementation References
 
-- https://github.com/AdityaGolatkar/SelectiveForgetting
+- [Fischer Forgetting and NTK Scrubbing](https://github.com/AdityaGolatkar/SelectiveForgetting)
 
-- https://github.com/OPTML-Group/Unlearn-Sparse
+- [Prunning and Sparsity driven Catastrophic Forgetting](https://github.com/OPTML-Group/Unlearn-Sparse)
 
-- https://github.com/meghdadk/SCRUB
+- [Distillation based Unlearning](https://github.com/meghdadk/SCRUB)
 
-- https://github.com/vikram2000b/bad-teaching-unlearning
+- [Good and Bad Teacher Distillation based Unlearning](https://github.com/vikram2000b/bad-teaching-unlearning)
 
 
 
