@@ -40,6 +40,8 @@ from auxil.distillation import *
 from auxil.sparisification import *
 from auxil.bad_distillation import *
 from auxil.mia_forget_logit import *
+from auxil.fisher_forget import *
+from auxil.ntk_scrubbing import *
 
 
 
@@ -261,6 +263,78 @@ def main():
 
     file_path = os.path.join(result_directory_path,'catastrophic_unlearning_stats.csv')
     df.to_csv(file_path, index=False)
+
+
+
+    #----------------------Fischer-Forgetting Method---------------------------------------------------------------------------------
+    vgg16=modify_vgg16(channel, im_size[0], num_classes)
+    naive_net=Vgg16(vgg16=vgg16).to(device)
+    file_path = os.path.join(new_directory_path,'pretrained_net.pth')
+    naive_net.load_state_dict(torch.load(file_path))
+    starting_time = time.time()
+    forgot_net=fisher_forgetting(naive_net, retain_loader, forget_loader, device, alpha=1e-6)
+    ending_time = time.time()
+    unlearning_time=ending_time - starting_time
+
+    mia_score=measure_mia(forgot_net, forget_loader, test_loader, device)
+    retain_acc=test(forgot_net, retain_loader, device)
+    forget_acc=test(forgot_net, forget_loader, device)
+
+    print('\nFisher-Forgetting Stats: ')
+    print('======================================')
+    print('mia_score: ', mia_score)
+    print('retain_acc: ', retain_acc)
+    print('forget_acc: ', forget_acc)
+    print('unlearning_time: ', unlearning_time)
+    print('======================================')
+
+    stat_data = {
+        'mia_score': [mia_score],
+        'retain_acc': [retain_acc],
+        'forget_acc': [forget_acc],
+        'unlearning_time': [unlearning_time]
+    }
+
+    df = pd.DataFrame(stat_data)
+
+    file_path = os.path.join(result_directory_path,'fisher_forgetting_stats.csv')
+    df.to_csv(file_path, index=False)
+
+
+    #----------------------NTK-Scrubbing Method---------------------------------------------------------------------------------
+    vgg16=modify_vgg16(channel, im_size[0], num_classes)
+    naive_net=Vgg16(vgg16=vgg16).to(device)
+    file_path = os.path.join(new_directory_path,'pretrained_net.pth')
+    naive_net.load_state_dict(torch.load(file_path))
+    starting_time = time.time()
+    forgot_net=ntk_scrubbing(naive_net, retain_loader, forget_loader, num_classes, weight_decay=1e-1, device=device)
+    ending_time = time.time()
+    unlearning_time=ending_time - starting_time
+
+    mia_score=measure_mia(forgot_net, forget_loader, test_loader, device)
+    retain_acc=test(forgot_net, retain_loader, device)
+    forget_acc=test(forgot_net, forget_loader, device)
+
+    print('\nNTK-Scrubbing Stats: ')
+    print('======================================')
+    print('mia_score: ', mia_score)
+    print('retain_acc: ', retain_acc)
+    print('forget_acc: ', forget_acc)
+    print('unlearning_time: ', unlearning_time)
+    print('======================================')
+
+    stat_data = {
+        'mia_score': [mia_score],
+        'retain_acc': [retain_acc],
+        'forget_acc': [forget_acc],
+        'unlearning_time': [unlearning_time]
+    }
+
+    df = pd.DataFrame(stat_data)
+
+    file_path = os.path.join(result_directory_path,'ntk_scrubbing_stats.csv')
+    df.to_csv(file_path, index=False)
+
 
 
 
