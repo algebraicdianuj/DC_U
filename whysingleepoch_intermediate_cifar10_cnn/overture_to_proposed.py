@@ -31,9 +31,6 @@ import pickle
 from modular_unlearn.offline_training import *
 from modular_unlearn.ds_condensation_imrpvDM import *
 from modular_unlearn.modular_forgetting import *
-from modular_unlearn.unlearning_metric import *
-from modular_unlearn.overfitting_metric import *
-from auxil.auxils import *
 from model.model import *
 from auxil.retrain import *
 from auxil.distillation import *

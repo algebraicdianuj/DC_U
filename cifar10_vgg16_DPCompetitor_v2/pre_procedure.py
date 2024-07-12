@@ -26,7 +26,6 @@ import torchvision.models as models
 from sklearn.cluster import KMeans
 import pandas as pd
 from torchvision.models import resnet18
-import timm
 from auxil.auxils import *
 from model.model import *
 

@@ -16,11 +16,9 @@ from torchvision import datasets, transforms
 import random
 import matplotlib.pyplot as plt
 import time
-from captum.attr import IntegratedGradients
 from torch.utils.data import Dataset
 from torch.utils.data import DataLoader, random_split
 from sklearn import linear_model, model_selection
-from captum.attr import IntegratedGradients
 from torch.utils.data import Dataset
 from torch.utils.data import DataLoader, random_split
 from sklearn import linear_model, model_selection

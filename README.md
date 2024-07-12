@@ -1,5 +1,10 @@
 Code release for the paper "Dataset Condensation Driven Machine Unlearning".
 
+# Setup
+```bash
+conda create -n DCU python=3.8.19
+conda env create -f environment.yml
+```
 
 # Experiments
 

@@ -31,8 +31,7 @@ import pickle
 from modular_unlearn.offline_training import *
 from modular_unlearn.ds_condensation_imrpvDM import *
 from modular_unlearn.modular_forgetting import *
-from modular_unlearn.unlearning_metric import *
-from modular_unlearn.overfitting_metric import *
+
 from auxil.auxils import *
 from model.model import *
 from auxil.retrain import *
@@ -54,7 +53,7 @@ def main():
         print(f"Directory '{directory_name}' already exists in the current working directory.")
 
     #----------------------Hyperparameters---------------------------------
-    device= torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
+    device= torch.device("cuda" if torch.cuda.is_available() else "cpu")
     batch_size = 256
     batch_size_bucket=128
     batch_syn=32

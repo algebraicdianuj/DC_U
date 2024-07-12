@@ -48,7 +48,6 @@ from auxil.trivial_mi import *
 from auxil.innovative_mi_singleimg import *
 from auxil.innovative_mi_multiimg import *
 from auxil.mia_whole import *
-from tensorflow_privacy.privacy.analysis import compute_dp_sgd_privacy
 
 
 def main():

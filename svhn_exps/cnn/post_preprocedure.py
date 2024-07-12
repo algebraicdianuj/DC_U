@@ -29,8 +29,6 @@ from torch.utils.data import DataLoader
 import pickle
 from auxil.auxils import *
 from model.model import *
-from modular_unlearn.overfitting_metric import *
-
 
 
 
@@ -237,22 +235,6 @@ def main():
 
         retain_images = train_images[retain_indices]
         retain_labels = train_labels[retain_indices]
-
-
-    elif choice=='mia_protection':
-
-        indices = list(range(dataset_size))
-
-        # shuffling the indices
-        torch.manual_seed(seeder)  # for reproducibility
-        indices = torch.randperm(dataset_size)
-
-
-        new_lab_train= new_lab_train[indices]
-        train_images = train_images[indices]
-        train_labels = train_labels[indices]
-
-        forget_indices, retain_indices, forget_images, forget_labels, retain_images, retain_labels = get_overfitting_samples(net, nn.CrossEntropyLoss(), train_images, train_labels, indices, device)
 
 
     else:
