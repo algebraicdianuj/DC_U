@@ -1,4 +1,4 @@
-Code release for the paper "Dataset Condensation Driven Machine Unlearning".
+Code release for the paper ["Dataset Condensation Driven Machine Unlearning"](https://arxiv.org/abs/2402.00195).
 
 # Setup
 ```bash
