@@ -83,6 +83,7 @@ def main():
     im_size = (32,32)
     num_classes = 10
     lr_net=1e-3
+    sub_sample=100
     #----------------------Hyperparameters---------------------------------
 
 
@@ -115,8 +116,20 @@ def main():
     training_images=torch.cat(training_images, dim=0)
     training_labels=torch.cat(training_labels, dim=0)
 
+    # --------------------Subsample the dataset--------------------------------
+
+    class_images=[]
+    class_labels=[]
+    for i in range(torch.max(training_labels)+1):
+        class_images.append(training_images[training_labels==i][:sub_sample])
+        class_labels.append(training_labels[training_labels==i][:sub_sample])
+
+    training_images=torch.cat(class_images, dim=0)
+    training_labels=torch.cat(class_labels, dim=0)
+
     dst_train=TensorDatasett(training_images, training_labels)
     train_loader=torch.utils.data.DataLoader(dst_train, batch_size=batch_size, shuffle=True)
+    #--------------------------------------------------------------------------
 
 
     test_images=[]

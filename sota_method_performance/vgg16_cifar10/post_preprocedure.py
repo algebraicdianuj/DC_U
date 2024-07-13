@@ -55,9 +55,9 @@ def main():
     channel = 3
     im_size = (32, 32)
     num_classes = 10
-    batch_real = 5000
+    batch_real = 100   # reduced it for that damn Goltakar's work
     split_ratio = 0.1   # forget-retain split ratio
-    n_subclasses= 450   # K-means "K"
+    n_subclasses= 45   # K-means "K"
     seeder=42
     ipc=10
     choice= 'arbitrary_uniform'    # 'arbitrary_uniform' or 'classwise' or 'arbitrary_partial' 'mia_protection'

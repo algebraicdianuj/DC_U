@@ -17,7 +17,7 @@ pip install timm
 
 # Experiments
 
-## Base Comparison between SOTA performance mention [here](#sota-unlearning-implementation-references)
+## Base Comparison between SOTA performance mentioned [here](#sota-unlearning-implementation-references)
 ### VGG-16 | CIFAR-10
 
 ```bash
