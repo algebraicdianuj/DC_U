@@ -1,9 +1,0 @@
-name: torcher3
-channels:
-  - loopbio
-  - defaults
-  - conda-forge
-dependencies:
-  - python=3.8
-  - scikit-image
-prefix: /home/junaid/anaconda3/envs/torcher3
