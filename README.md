@@ -18,13 +18,24 @@ pip install timm
 # Experiments
 
 ## Base Comparison between SOTA performance mentioned [here](#sota-unlearning-implementation-references)
-### VGG-16 | CIFAR-10
+### VGG-16 | CIFAR-10 (downsampled->100 images per class)
+
+I had to downsample the dataset for the sake of NTK based scrubbing method computation on 16GB RAM, 8 GB VRAM.
 
 ```bash
 cd sota_method_performance/vgg16_cifar10
 chmod +x runner.sh
 ./runner.sh
 ```
+
+### CNN | CIFAR-10 (downsampled->100 images per class)
+
+```bash
+cd sota_method_performance/vgg16_cifar10
+chmod +x runner.sh
+./runner.sh
+```
+
 
 ## Random Forgetting (10 Percent) (Table-1)
 ### MLP | CIFAR10
