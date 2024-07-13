@@ -164,7 +164,7 @@ def main():
                                             shuffle=True, num_workers=2)
 
 
-    device = "cuda:0" if torch.cuda.is_available() else "cpu"
+    device = "cuda" if torch.cuda.is_available() else "cpu"
     im_size = (32, 32)
     channel = 3
 
@@ -191,7 +191,7 @@ def main():
         original_labels_dict = {}
         
         # Load the pretrained model for feature extraction
-        device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         model.to(device)
         
         # Create a DataLoader to facilitate feature extraction

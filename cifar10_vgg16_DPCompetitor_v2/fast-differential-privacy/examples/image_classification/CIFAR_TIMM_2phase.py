@@ -1,7 +1,7 @@
 '''Two-phase Training CIFAR10/CIFAR100'''
 def main(args):
 
-    device= torch.device("cuda:0")
+    device= torch.device("cuda")
 
     # Data
     print('==> Preparing data..')

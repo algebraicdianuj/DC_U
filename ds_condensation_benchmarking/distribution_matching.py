@@ -90,7 +90,7 @@ def main():
 
 
     #--------Hyperparameters-----------------------------------------------
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     condense_iterations=20000 #Authors consider default 20000
     num_classes = 10
     batch_real = 256

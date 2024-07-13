@@ -64,7 +64,7 @@ def main():
         print(f"Directory '{dat_dir}' already exists in the current working directory.")
 
     #----------------------Hyperparameters---------------------------------
-    device= torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
+    device= torch.device("cuda" if torch.cuda.is_available() else "cpu")
     batch_size = 256
     batch_syn=32
     channel = 3

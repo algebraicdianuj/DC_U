@@ -4,7 +4,7 @@ def main(args):
         print("Mode must be one of 'nonDP','BK-ghost', 'BK-MixGhostClip', 'BK-MixOpt','nonDP-BiTFiT','BiTFiT'")
         return None
 
-    device= torch.device("cuda:0")
+    device= torch.device("cuda")
 
     # Data
     print('==> Preparing data..')

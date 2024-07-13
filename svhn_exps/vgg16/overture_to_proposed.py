@@ -54,7 +54,7 @@ def main():
         print(f"Directory '{directory_name}' already exists in the current working directory.")
 
     #----------------------Hyperparameters---------------------------------
-    device= torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    device= torch.device("cuda" if torch.cuda.is_available() else "cpu")
     batch_size = 256
     batch_size_bucket=128
     batch_syn=32

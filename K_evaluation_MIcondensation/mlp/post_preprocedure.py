@@ -57,7 +57,7 @@ def main():
 
 
     #----------------------Hyperparameters---------------------------------
-    device= torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    device= torch.device("cuda" if torch.cuda.is_available() else "cpu")
     batch_size = 256
     channel = 3
     im_size = (32, 32)
