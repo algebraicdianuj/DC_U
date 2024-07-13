@@ -4,14 +4,15 @@ Code release for the paper ["Dataset Condensation Driven Machine Unlearning"](ht
 Platform: Ubuntu 22
 ```bash
 conda create -n DCU python=3.8.19
-conda env create -f environment.yml
+conda activate DCU
+pip install -r requirements.txt
 ```
 
 
 # Experiments
 
 ## Base Comparison between SOTA (not including mine) performance
-### CIFAR-10 | VGG-16
+### VGG-16 | CIFAR-10
 
 ```bash
 cd sota_method_performance/vgg16_cifar10
@@ -20,14 +21,14 @@ chmod +x runner.sh
 ```
 
 ## Random Forgetting (10 Percent) (Table-1)
-### MLP-CIFAR10
+### MLP | CIFAR10
 ```bash
 cd cifar10_exps/mlp
 chmod +x runner.sh
 ./runner.sh
 ```
 
-### CNN-CIFAR10
+### CNN | CIFAR10
 ```bash
 cd cifar10_exps/cnn
 chmod +x runner.sh
@@ -35,42 +36,42 @@ chmod +x runner.sh
 ```
 
 
-### RESNET18-CIFAR10
+### RESNET18 | CIFAR10
 ```bash
 cd cifar10_exps/resnet18
 chmod +x runner.sh
 ./runner.sh
 ```
 
-### VGG16-CIFAR10
+### VGG16 | CIFAR10
 ```bash
 cd cifar10_exps/vgg16
 chmod +x runner.sh
 ./runner.sh
 ```
 
-### MLP-SVHN
+### MLP | SVHN
 ```bash
 cd svhn_exps/mlp
 chmod +x runner.sh
 ./runner.sh
 ```
 
-### CNN-SVHN
+### CNN | SVHN
 ```bash
 cd svhn_exps/cnn
 chmod +x runner.sh
 ./runner.sh
 ```
 
-### RESNET18-SVHN
+### RESNET18 | SVHN
 ```bash
 cd svhn_exps/resnet18
 chmod +x runner.sh
 ./runner.sh
 ```
 
-### VGG16-SVHN
+### VGG16 | SVHN
 ```bash
 cd svhn_exps/vgg16
 chmod +x runner.sh
@@ -122,7 +123,7 @@ chmod +x runner.sh
 
 
 ## Effect of different K values over different sizes of Forget set (Dataset: CIFAR-10, Model: VGG16)
-### VGG Experiments
+### VGG16 Experiments
 ```bash
 cd K_evaluation
 

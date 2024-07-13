@@ -6,13 +6,13 @@ attrs==21.4.0
 cachetools==5.3.3
 certifi==2024.7.4
 charset-normalizer==3.3.2
-click @ file:///croot/click_1698129812380/work
-cloudpickle @ file:///croot/cloudpickle_1683040006038/work
+click
+cloudpickle
 cmake==3.25.0
 contourpy==1.1.1
 cycler==0.12.1
-cytoolz @ file:///croot/cytoolz_1701723583781/work
-dask @ file:///croot/dask-core_1683065217061/work
+cytoolz
+dask
 decorator==5.1.1
 dm-tree==0.1.7
 dp-accounting==0.3.0
@@ -20,7 +20,7 @@ etils==1.3.0
 filelock==3.13.1
 flatbuffers==24.3.25
 fonttools==4.53.1
-fsspec @ file:///croot/fsspec_1714461537038/work
+fsspec
 gast==0.4.0
 google-auth==2.32.0
 google-auth-oauthlib==1.0.0
@@ -30,33 +30,33 @@ grpcio==1.65.0
 h5py==3.11.0
 huggingface-hub==0.23.4
 idna==3.7
-imagecodecs @ file:///croot/imagecodecs_1695064943445/work
-imageio @ file:///croot/imageio_1707247282708/work
-importlib-metadata @ file:///croot/importlib_metadata-suite_1704813515092/work
+imagecodecs
+imageio
+importlib-metadata
 importlib_resources==6.4.0
 Jinja2==3.1.3
 joblib==1.4.2
 keras==2.13.1
 kiwisolver==1.4.5
-lazy_loader @ file:///croot/lazy_loader_1718176737906/work
+lazy_loader
 libclang==18.1.1
 lit==15.0.7
-locket @ file:///opt/conda/conda-bld/locket_1652903118915/work
+locket
 Markdown==3.6
 MarkupSafe==2.1.5
 matplotlib==3.7.5
-mkl-fft @ file:///croot/mkl_fft_1695058164594/work
-mkl-random @ file:///croot/mkl_random_1695059800811/work
+mkl-fft
+mkl-random
 mkl-service==2.4.0
 mpmath==1.2.1
 networkx==3.0
 numpy==1.22.4
 oauthlib==3.2.2
 opt-einsum==3.3.0
-packaging @ file:///croot/packaging_1720101850331/work
+packaging
 pandas==1.5.3
-partd @ file:///croot/partd_1698702562572/work
-pillow @ file:///croot/pillow_1714398848491/work
+partd
+pillow
 promise==2.3
 protobuf==3.20.3
 psutil==6.0.0
@@ -65,13 +65,13 @@ pyasn1_modules==0.4.0
 pyparsing==3.1.2
 python-dateutil==2.9.0.post0
 pytz==2024.1
-PyWavelets @ file:///croot/pywavelets_1670425177960/work
-PyYAML @ file:///croot/pyyaml_1698096049011/work
+PyWavelets
+PyYAML
 requests==2.32.3
 requests-oauthlib==2.0.0
 rsa==4.9
 safetensors==0.4.3
-scikit-image @ file:///croot/scikit-image_1682528309703/work
+scikit-image
 scikit-learn==1.3.2
 scipy==1.10.1
 six==1.16.0
@@ -87,10 +87,10 @@ tensorflow-privacy==0.8.5
 tensorflow-probability==0.21.0
 termcolor==2.4.0
 threadpoolctl==3.5.0
-tifffile @ file:///croot/tifffile_1695107451082/work
+tifffile
 timm==1.0.7
 toml==0.10.2
-toolz @ file:///croot/toolz_1667464077321/work
+toolz
 torch==2.0.0+cu118
 torchaudio==2.0.1+cu118
 torchvision==0.15.1+cu118
@@ -100,4 +100,4 @@ typing_extensions==4.5.0
 urllib3==2.2.2
 Werkzeug==3.0.3
 wrapt==1.16.0
-zipp @ file:///croot/zipp_1704206909481/work
+zipp
