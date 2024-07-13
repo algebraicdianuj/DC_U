@@ -135,6 +135,7 @@ def get_images_from_testloader(num_images, class_label, test_loader):
     
 
 
+
 def extract_features(model, dataloader, device):
     features = []
     labels = []
@@ -151,7 +152,6 @@ def extract_features(model, dataloader, device):
     return torch.cat(features, 0), torch.cat(labels, 0)
 
 
-
 def create_sub_classes(tensor, labels, model, num_classes=10, sub_divisions=10, device=torch.device('cpu')):
     new_labels = torch.zeros_like(labels)
     original_labels_dict = {}
@@ -160,11 +160,10 @@ def create_sub_classes(tensor, labels, model, num_classes=10, sub_divisions=10, 
     
     # Create a DataLoader to facilitate feature extraction
     dataset = TensorDatasett(tensor, labels)
-    loader = DataLoader(dataset, batch_size=32, shuffle=False)
+    loader = DataLoader(dataset, batch_size=256, shuffle=False)
     
     # Extract features
     features, _ = extract_features(model, loader, device)
-    print("Extracting Features Done!")
     
     for i in range(num_classes):
         mask = labels == i
@@ -236,47 +235,3 @@ def pruning_model(model, px):
         pruning_method=prune.L1Unstructured,
         amount=px,
     )
-
-
-
-
-def find_elbow_layer_index(model, dataloader):
-    criterion = nn.CrossEntropyLoss()
-    model.eval()
-    model.to('cpu')
-
-    # Get gradients
-    for inputs, labels in dataloader:
-        inputs.requires_grad = True
-        outputs = model.original_model(inputs)  # Access the original_model attribute
-        loss = criterion(outputs, labels)
-        loss.backward(retain_graph=True)
-        break  # Only one batch is needed
-
-    # Store layer gradient norms
-    gradient_norms = []
-    for name, param in model.original_model.named_parameters():  # Access parameters of the original_model
-        grad_norm = param.grad.norm().item()
-        gradient_norms.append(grad_norm)
-
-    # Function to find elbow point in a curve
-    def find_elbow_point(values):
-        n_points = len(values)
-        all_coords = np.vstack((range(n_points), values)).T
-        first_point = all_coords[0]
-        line_vector = all_coords[-1] - all_coords[0]
-        line_vector_norm = line_vector / np.sqrt(np.sum(line_vector**2))
-
-        vector_from_first = all_coords - first_point
-        dot_product = np.dot(vector_from_first, line_vector_norm)
-        proj_vector_from_first = np.outer(dot_product, line_vector_norm)
-        vector_to_line = vector_from_first - proj_vector_from_first
-
-        dist_to_line = np.sqrt(np.sum(vector_to_line**2, axis=1))
-        elbow_index = np.argmax(dist_to_line)
-        return elbow_index
-    
-    # Find and return elbow point index
-    elbow_index = find_elbow_point(gradient_norms)
-    return elbow_index
-
