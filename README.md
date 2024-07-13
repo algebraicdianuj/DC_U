@@ -10,9 +10,11 @@ conda env create -f environment.yml
 
 # Experiments
 
-## Base Comparison between SOTA (not including mine) performance on CIFAR-10 and VGG-16
+## Base Comparison between SOTA (not including mine) performance
+### CIFAR-10 | VGG-16
+
 ```bash
-cd sota_method_performance
+cd sota_method_performance/vgg16_cifar10
 chmod +x runner.sh
 ./runner.sh
 ```
