@@ -202,6 +202,8 @@ cd ..
 mv cifar10_vgg16_Condensed_retraining/result/modular_unlearning.csv plotting/Unlearning_in_Condensation
 mv cifar10_vgg16_Condensed_retraining/result/recondensation_training.csv plotting/Unlearning_in_Condensation
 mv cifar10_vgg16_Condensed_retraining/result/retraining.csv plotting/Unlearning_in_Condensation
+mv cifar10_vgg16_Condensed_retraining/result/fisher_forgetting_stats.csv plotting/Unlearning_in_Condensation
+mv cifar10_vgg16_Condensed_retraining/result/ntk_scrubbing_stats.csv plotting/Unlearning_in_Condensation
 cd plotting/Unlearning_in_Condensation
 jupyter nbconvert --to notebook --execute plotter.ipynb --output plotter.ipynb
 ```

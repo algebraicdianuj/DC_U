@@ -67,7 +67,7 @@ def main():
         print(f"Directory '{dat_dir}' already exists in the current working directory.")
 
     #----------------------Hyperparameters---------------------------------
-    device= torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    device= torch.device("cuda" if torch.cuda.is_available() else "cpu")
     batch_size = 256
     batch_syn=32
     channel = 3
@@ -75,16 +75,6 @@ def main():
     hidden_size=128
     num_classes = 10
     lr_proposed=1e-3
-
-    lr_overture=1e-3
-    lr_intermediate=1e-4
-    overture_epochs=30
-    beggining_epochs=1
-    final_epochs = 10
-    intermediate_epochs= 1
-    final_thr=15  # intended for blocking the final training in overture, 
-                # from the end of overture epochs--> improves retain acc while preserving forget accuracy
-
 
 
     retrain_lr=1e-3
@@ -110,9 +100,7 @@ def main():
     file_path = os.path.join(new_directory_path,'pretrained_net.pth')
     net.load_state_dict(torch.load(file_path))
 
-    file_path = os.path.join(new_directory_path,'Klabels_labels_dict.pkl')
-    with open(file_path, 'rb') as file:
-        original_labels_dict = pickle.load(file)
+
 
     file_path = os.path.join(new_directory_path,'forget_set.pth')
     forget_set_real = torch.load(file_path)
@@ -121,53 +109,16 @@ def main():
 
     file_path = os.path.join(new_directory_path,'test_set.pth')
     dst_test = torch.load(file_path)
-    file_path = os.path.join(new_directory_path,'indices.pth')
-    indices = torch.load(file_path)
-    file_path = os.path.join(new_directory_path,'forget_indices.pth')
-    forget_indices = torch.load(file_path)
-    file_path = os.path.join(new_directory_path,'retain_indices.pth')
-    retain_indices = torch.load(file_path)
-    file_path = os.path.join(new_directory_path,'clustered_label_train.pth')
-    new_lab_train = torch.load(file_path)
-    file_path = os.path.join(new_directory_path,'image_train.pth')
-    train_images = torch.load(file_path)
-    file_path = os.path.join(new_directory_path,'label_train.pth')
-    train_labels = torch.load(file_path)
-    file_path = os.path.join(new_directory_path,'syn_set.pth')
-    img_syn_dataset = torch.load(file_path)
-    file_path = os.path.join(new_directory_path,'reduced_retain_images.pth')
-    reduced_retain_images=torch.load(file_path)
-    file_path = os.path.join(new_directory_path,'reduced_retain_labels.pth')
-    reduced_retain_labels=torch.load(file_path)
-    file_path = os.path.join(new_directory_path,'inverted_IMG.pth')
-    inverted_IMG=torch.load(file_path)
-    file_path = os.path.join(new_directory_path,'inverted_LABEL.pth')
-    inverted_LABEL=torch.load(file_path)
-    file_path = os.path.join(new_directory_path,'indices_train_wrt_bucket.pth')
-    indices_train_wrt_bucket=torch.load(file_path)
-    file_path = os.path.join(new_directory_path,'bucket_labbies.pth')
-    bucket_labbies=torch.load(file_path)
 
-
-    img_real_data_dataset=TensorDatasett(train_images, train_labels)
-    img_real_data_loader=torch.utils.data.DataLoader(img_real_data_dataset, batch_size=batch_size, shuffle=True)
     forget_loader=torch.utils.data.DataLoader(forget_set_real, batch_size=batch_size, shuffle=True)
     retain_loader=torch.utils.data.DataLoader(retain_set_real, batch_size=batch_size, shuffle=True)
-    img_syn_loader=torch.utils.data.DataLoader(img_syn_dataset, batch_size=batch_syn, shuffle=True)
     test_loader=torch.utils.data.DataLoader(dst_test, batch_size=batch_size, shuffle=True)
-    reduced_retain_dataset=TensorDatasett(reduced_retain_images,reduced_retain_labels)
-    reduced_retain_loader=torch.utils.data.DataLoader(reduced_retain_dataset, batch_size=batch_size, shuffle=True)
+
 
     # sample the retain_set_real by partial_retain_ration
     partial_retain_set_real = torch.utils.data.Subset(retain_set_real, random.sample(range(len(retain_set_real)), int(len(retain_set_real)*partial_retain_ratio)))
 
 
-
-    comp_ratio = len(reduced_retain_loader.dataset)/len(retain_loader.dataset)
-    print("Ratio of Reduced Retain Set to Retain Set: ", comp_ratio)
-    file_path = os.path.join(result_directory_path,'ratio_reduced_retain_set_to_retain_set.txt')
-    with open(file_path, 'w') as file:
-        file.write("Dataset Compression Ratio: "+str(comp_ratio))
 
 
     #--------------------------Initializing my Unlearning Method--------------------------------------------------------------------------- 

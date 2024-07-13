@@ -41,6 +41,10 @@ from auxil.distillation import *
 from auxil.sparisification import *
 from auxil.bad_distillation import *
 from auxil.mia_forget_logit import *
+from auxil.fisher_forget import *
+from auxil.ntk_scrubbing import *
+
+
 
 
 
@@ -146,7 +150,8 @@ def main():
     reduced_retain_dataset=TensorDatasett(reduced_retain_images,reduced_retain_labels)
     reduced_retain_loader=torch.utils.data.DataLoader(reduced_retain_dataset, batch_size=batch_size, shuffle=True)
 
-
+    net_for_ff=copy.deepcopy(net)
+    net_for_ntk=copy.deepcopy(net)
     #--------------------------Initializing my Unlearning Method--------------------------------------------------------------------------- 
     ref_net=copy.deepcopy(net)
     for param in list(ref_net.parameters()):
@@ -190,6 +195,65 @@ def main():
     # save as csv file in /result
     df = pd.DataFrame({'mia_score': [mia_score], 'retain_acc': [retain_acc], 'forget_acc': [forget_acc], 'test_acc': [test_acc]})
     df.to_csv(os.path.join(result_directory_path,'reference_model.csv'), index=False)
+
+
+    #----------------------Fischer-Forgetting Method---------------------------------------------------------------------------------
+    starting_time = time.time()
+    forgot_net=fisher_forgetting(net_for_ff, retain_loader, forget_loader, device, alpha=1e-6)
+    ending_time = time.time()
+    unlearning_time=ending_time - starting_time
+
+    mia_score=measure_mia(forgot_net, forget_loader, test_loader, device)
+    retain_acc=test(forgot_net, retain_loader, device)
+    forget_acc=test(forgot_net, forget_loader, device)
+
+    print('\nFisher-Forgetting Stats: ')
+    print('======================================')
+    print('mia_score: ', mia_score)
+    print('retain_acc: ', retain_acc)
+    print('forget_acc: ', forget_acc)
+    print('unlearning_time: ', unlearning_time)
+    print('======================================')
+
+    stat_data = {
+        'mia_score': [mia_score],
+        'retain_acc': [retain_acc],
+        'forget_acc': [forget_acc],
+        'unlearning_time': [unlearning_time]
+    }
+
+    df = pd.DataFrame(stat_data)
+    df.to_csv(os.path.join(result_directory_path,'fisher_forgetting_stats.csv'), index=False)
+
+    
+    #----------------------NTK-Scrubbing Method---------------------------------------------------------------------------------
+    starting_time = time.time()
+    forgot_net = ntk_scrubbing(net_for_ntk, retain_loader, forget_loader, num_classes, weight_decay=1e-1, device=device)
+    ending_time = time.time()
+    unlearning_time=ending_time - starting_time
+
+    mia_score = measure_mia(forgot_net, forget_loader, test_loader, device)
+    retain_acc = test(forgot_net, retain_loader, device)
+    forget_acc = test(forgot_net, forget_loader, device)
+
+    print('\nNTK-Scrubbing Stats: ')
+    print('======================================')
+    print('mia_score: ', mia_score)
+    print('retain_acc: ', retain_acc)
+    print('forget_acc: ', forget_acc)
+    print('unlearning_time: ', unlearning_time)
+    print('======================================')
+
+    stat_data = {
+        'mia_score': [mia_score],
+        'retain_acc': [retain_acc],
+        'forget_acc': [forget_acc],
+        'unlearning_time': [unlearning_time]
+    }
+
+    df = pd.DataFrame(stat_data)
+    df.to_csv(os.path.join(result_directory_path,'ntk_scrubbing_stats.csv'), index=False)
+    
 
 
     #--------------------------my Unlearning Method------------------------------------------------------------------------------------
@@ -269,7 +333,7 @@ def main():
     # Adjusting the input features of the classifier
     vgg16.classifier[0] = nn.Linear(classifier_input_size, 4096)
     
-    # Adjust the final classifier layer to have the desired number of classes as output
+    
     vgg16.classifier[6] = nn.Linear(4096, num_classes)
     vgg16=Vgg16(vgg16).to(device)
 
