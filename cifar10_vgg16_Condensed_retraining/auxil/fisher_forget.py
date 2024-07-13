@@ -100,4 +100,4 @@ def fisher_forgetting(model, retain_loader, forget_loader, device=torch.device("
 
     print(f"Total KL divergence: {total_kl}")
 
-    return model_fisher, total_kl
+    return model_fisher
