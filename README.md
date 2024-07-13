@@ -1,14 +1,21 @@
 Code release for the paper ["Dataset Condensation Driven Machine Unlearning"](https://arxiv.org/abs/2402.00195).
 
 # Setup
+Platform: Ubuntu 22
 ```bash
 conda create -n DCU python=3.8.19
 conda env create -f environment.yml
 ```
 
+
 # Experiments
 
-Platform: Ubuntu 22
+## Base Comparison between SOTA (not including mine) performance on CIFAR-10 and VGG-16
+```bash
+cd sota_method_performance
+chmod +x runner.sh
+./runner.sh
+```
 
 ## Random Forgetting (10 Percent) (Table-1)
 ### MLP-CIFAR10
