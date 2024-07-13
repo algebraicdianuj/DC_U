@@ -211,7 +211,7 @@ def main():
     file_path = os.path.join(new_directory_path,'pretrained_net.pth')
     naive_net.load_state_dict(torch.load(file_path))
     starting_time = time.time()
-    forgot_net=fisher_forgetting(naive_net, retain_loader, forget_loader, device, alpha=1e-6)
+    forgot_net=fisher_forgetting(naive_net, retain_loader, forget_loader, device=device, alpha=1e-7, seed=42)
     ending_time = time.time()
     unlearning_time=ending_time - starting_time
 
@@ -249,7 +249,7 @@ def main():
     file_path = os.path.join(new_directory_path,'pretrained_net.pth')
     naive_net.load_state_dict(torch.load(file_path))
     starting_time = time.time()
-    forgot_net=ntk_scrubbing(naive_net, retain_loader, forget_loader, num_classes, weight_decay=1e-1, device=device)
+    forgot_net=ntk_scrubbing(naive_net, retain_loader, forget_loader, device=device, num_classes=num_classes, weight_decay=1e-1, beta=1e2)
     ending_time = time.time()
     unlearning_time=ending_time - starting_time
 

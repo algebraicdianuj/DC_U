@@ -199,7 +199,7 @@ def main():
 
     #----------------------Fischer-Forgetting Method---------------------------------------------------------------------------------
     starting_time = time.time()
-    forgot_net=fisher_forgetting(net_for_ff, retain_loader, forget_loader, device, alpha=1e-6)
+    forgot_net=fisher_forgetting(net_for_ff, retain_loader, forget_loader, device=device, alpha=1e-7, seed=42)
     ending_time = time.time()
     unlearning_time=ending_time - starting_time
 
@@ -228,7 +228,7 @@ def main():
     
     #----------------------NTK-Scrubbing Method---------------------------------------------------------------------------------
     starting_time = time.time()
-    forgot_net = ntk_scrubbing(net_for_ntk, retain_loader, forget_loader, num_classes, weight_decay=1e-1, device=device)
+    forgot_net = ntk_scrubbing(net_for_ntk, retain_loader, forget_loader, device=device, num_classes=num_classes, weight_decay=1e-1, beta=1e2)
     ending_time = time.time()
     unlearning_time=ending_time - starting_time
 

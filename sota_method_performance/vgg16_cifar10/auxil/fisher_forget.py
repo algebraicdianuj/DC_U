@@ -57,7 +57,7 @@ def hessian(dataset, model, device):
         p.grad_acc /= len(train_loader)
         p.grad2_acc /= len(train_loader)
 
-def get_mean_var(p, is_base_dist=False, alpha=3e-6, num_classes=10, num_to_forget=None, class_to_forget=None):
+def get_mean_var(p, is_base_dist=False, alpha=3e-6, num_classes=10):
     var = copy.deepcopy(1. / (p.grad2_acc + 1e-8))
     var = var.clamp(max=1e3)
     if p.size(0) == num_classes:
@@ -70,9 +70,6 @@ def get_mean_var(p, is_base_dist=False, alpha=3e-6, num_classes=10, num_to_forge
         mu = copy.deepcopy(p.data.clone())
     else:
         mu = copy.deepcopy(p.data.clone())
-    if p.size(0) == num_classes and num_to_forget is None:
-        mu[class_to_forget] = 0
-        var[class_to_forget] = 0.0001
     if p.size(0) == num_classes:
         var *= 10
     elif p.ndim == 1:
@@ -82,14 +79,7 @@ def get_mean_var(p, is_base_dist=False, alpha=3e-6, num_classes=10, num_to_forge
 def kl_divergence_fisher(mu0, var0, mu1, var1):
     return ((mu1 - mu0).pow(2)/var0 + var1/var0 - torch.log(var1/var0) - 1).sum()
 
-def check_parameter_updates(model_before, model_after):
-    updated_parameters = []
-    for (name_before, param_before), (name_after, param_after) in zip(model_before.named_parameters(), model_after.named_parameters()):
-        if not torch.allclose(param_before.data, param_after.data):
-            updated_parameters.append(name_before)
-    return updated_parameters
-
-def fisher_forgetting(model, retain_loader, forget_loader, device, alpha=1e-6):
+def fisher_forgetting(model, retain_loader, forget_loader, device=torch.device("cpu"), alpha=1e-6, seed=42):
     model_fisher = copy.deepcopy(model)
     model_base = copy.deepcopy(model)
 
@@ -99,7 +89,7 @@ def fisher_forgetting(model, retain_loader, forget_loader, device, alpha=1e-6):
     hessian(retain_loader.dataset, model_fisher, device)
     hessian(forget_loader.dataset, model_base, device)
 
-    # torch.manual_seed(seed)
+    torch.manual_seed(seed)
     total_kl = 0
     for (k, p), (k0, p0) in zip(model_fisher.named_parameters(), model_base.named_parameters()):
         mu0, var0 = get_mean_var(p, False, alpha=alpha)
@@ -108,11 +98,11 @@ def fisher_forgetting(model, retain_loader, forget_loader, device, alpha=1e-6):
         total_kl += kl
         print(f"{k}: KL divergence = {kl:.1f}")
 
-        p.data = p.data0 - var0.sqrt() * torch.empty_like(p.data0).normal_()
+        p.data = p.data0 + var0.sqrt() * torch.empty_like(p.data0).normal_()
 
     print(f"Total KL divergence: {total_kl}")
 
-    return model_fisher
+    return model_fisher, total_kl
 
 
 
