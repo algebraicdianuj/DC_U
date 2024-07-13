@@ -77,7 +77,7 @@ def main():
     device= torch.device("cuda" if torch.cuda.is_available() else "cpu")
     mean = [0.4914, 0.4822, 0.4465]
     std = [0.2023, 0.1994, 0.2010]
-    training_epochs = 30
+    training_epochs = 50
     batch_size = 256
     channel = 3
     im_size = (32,32)
@@ -189,6 +189,13 @@ def main():
     torch.save(dst_train, file_path)
     file_path = os.path.join(new_directory_path,'test_dataset.pth')
     torch.save(dst_test, file_path)
+
+    print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+    print("Pretained Net is saved with following stats:")
+    print('Training Time:', training_time)
+    print('Train Accuracy:', train_acc)
+    print('Test Accuracy:', test_acc)
+    print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
 
 
 

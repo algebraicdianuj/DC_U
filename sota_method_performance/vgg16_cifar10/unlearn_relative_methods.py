@@ -78,10 +78,10 @@ def main():
 
 
     retrain_lr=1e-3
-    retrain_epochs=30
+    retrain_epochs=50
 
     distill_lr=1e-3
-    distill_epochs=30
+    distill_epochs=50
     hard_weigth=1
     soft_weight=1e-1
     kdT=4.0
