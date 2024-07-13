@@ -24,7 +24,8 @@ from sklearn import linear_model, model_selection
 import torchvision.models as models
 from sklearn.cluster import KMeans
 from auxil.auxils import *
-import tqdm
+from tqdm import tqdm
+
 
 
 
