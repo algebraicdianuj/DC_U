@@ -126,21 +126,6 @@ def main():
     for param in list(ref_net.parameters()):
         param.requires_grad = False
 
-    beggining=Beginning(ref_net).to(device)
-
-    intermediate=Intermediate(ref_net).to(device)
- 
-    data_bank=Databank(beggining=beggining, intermediate=intermediate).to(device)
-    file_path = os.path.join(new_directory_path,'databank.pth')
-    data_bank.load_state_dict(torch.load(file_path))
-
-    final=Final(ref_net).to(device)
-    file_path = os.path.join(new_directory_path,'final.pth')
-    final.load_state_dict(torch.load(file_path))
-
-    combined_model=CombinedModel(databank=data_bank, final=final).to(device)
-
-    optim_model=torch.optim.Adam(combined_model.parameters(), lr=lr_proposed)
     criterion = nn.CrossEntropyLoss()
     #----------------------------------------------------------------------------------------------------------------------------------
 
