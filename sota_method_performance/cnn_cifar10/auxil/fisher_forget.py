@@ -116,4 +116,3 @@ def fisher_forgetting(model, retain_loader, forget_loader, device, alpha=1e-6):
 
 
 
-

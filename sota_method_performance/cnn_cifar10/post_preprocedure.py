@@ -55,7 +55,7 @@ def main():
     channel = 3
     im_size = (32, 32)
     num_classes = 10
-    batch_real = 100   # number of images per class-reduced it for that damn Goltakar's work
+    batch_real = 300   # number of images per class-reduced it for that damn Goltakar's work
     split_ratio = 0.1   # forget-retain split ratio
     n_subclasses= 45   # K-means "K"
     seeder=42
@@ -71,8 +71,7 @@ def main():
     dst_train=torch.load(file_path)
     file_path = os.path.join(new_directory_path,'test_dataset.pth')
     dst_test=torch.load(file_path)
-    vgg16=modify_vgg16(channel, im_size[0], num_classes)
-    net=Vgg16(vgg16=vgg16).to(device)
+    net= CNN(channel, im_size[0], num_classes).to(device)
     file_path = os.path.join(new_directory_path,'pretrained_net.pth')
     net.load_state_dict(torch.load(file_path))
     test_loader = torch.utils.data.DataLoader(dst_test, batch_size=batch_size,

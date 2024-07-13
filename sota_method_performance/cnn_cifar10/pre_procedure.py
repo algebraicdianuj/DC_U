@@ -147,8 +147,8 @@ def main():
 
 
     #------------------Train the Net--------------------------------------------------------------------------------------------------------
-    vgg16=modify_vgg16(channel, im_size[0], num_classes)
-    net=Vgg16(vgg16=vgg16).to(device)
+
+    net=CNN(channel, im_size[0], num_classes).to(device)
     criterion = nn.CrossEntropyLoss()
     optimizer=torch.optim.Adam(net.parameters(), lr=lr_net)
 
