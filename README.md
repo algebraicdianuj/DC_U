@@ -1,7 +1,7 @@
 Code release for the paper ["Dataset Condensation Driven Machine Unlearning"](https://arxiv.org/abs/2402.00195).
 
 # Setup
-Platform: Ubuntu 22
+**Platform**: Ubuntu 22+
 ```bash
 conda create -n DCU python=3.8.19
 conda activate DCU
