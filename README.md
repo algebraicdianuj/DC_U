@@ -6,7 +6,11 @@ Platform: Ubuntu 22
 conda create -n DCU python=3.8.19
 conda activate DCU
 pip install torch==2.0.0+cu118 torchvision==0.15.1+cu118 torchaudio==2.0.1+cu118 --index-url https://download.pytorch.org/whl/cu118
-pip install -r requirements.txt
+python -m pip install -U scikit-image
+conda install scikit-image
+pip install adversarial-robustness-toolbox
+conda install -c conda-forge opacus
+pip install timm
 ```
 
 
