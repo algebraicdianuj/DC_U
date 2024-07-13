@@ -10,13 +10,14 @@ python -m pip install -U scikit-image
 conda install scikit-image
 pip install adversarial-robustness-toolbox
 conda install -c conda-forge opacus
+pip install tensorflow-privacy
 pip install timm
 ```
 
 
 # Experiments
 
-## Base Comparison between SOTA (not including mine) performance
+## Base Comparison between SOTA performance mention [here](#sota-unlearning-implementation-references)
 ### VGG-16 | CIFAR-10
 
 ```bash
