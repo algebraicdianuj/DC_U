@@ -83,7 +83,7 @@ def main():
     im_size = (32,32)
     num_classes = 10
     lr_net=1e-3
-    sub_sample=100
+    sub_sample=300
     #----------------------Hyperparameters---------------------------------
 
 

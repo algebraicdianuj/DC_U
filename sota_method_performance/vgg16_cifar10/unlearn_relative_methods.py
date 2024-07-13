@@ -120,8 +120,7 @@ def main():
 
 
 
-
-    #--------------------------Initializing my Unlearning Method--------------------------------------------------------------------------- 
+    #--------------------------Initializing--------------------------------------------------------------------------- 
     ref_net=copy.deepcopy(net)
     for param in list(ref_net.parameters()):
         param.requires_grad = False
@@ -164,6 +163,8 @@ def main():
     file_path = os.path.join(result_directory_path,'retraining_unlearning_stats.csv')
     df.to_csv(file_path, index=False)
 
+    del naive_net
+
 
     #----------------------Catastrophic Forgetting Method---------------------------------------------------------------------------------
     vgg16=modify_vgg16(channel, im_size[0], num_classes)
@@ -199,6 +200,8 @@ def main():
 
     file_path = os.path.join(result_directory_path,'catastrophic_unlearning_stats.csv')
     df.to_csv(file_path, index=False)
+
+    del naive_net
 
 
 
@@ -236,6 +239,9 @@ def main():
     file_path = os.path.join(result_directory_path,'fisher_forgetting_stats.csv')
     df.to_csv(file_path, index=False)
 
+    del forgot_net
+    del naive_net
+
 
     #----------------------NTK-Scrubbing Method---------------------------------------------------------------------------------
     vgg16=modify_vgg16(channel, im_size[0], num_classes)
@@ -271,6 +277,9 @@ def main():
     file_path = os.path.join(result_directory_path,'ntk_scrubbing_stats.csv')
     df.to_csv(file_path, index=False)
 
+    del forgot_net
+    del naive_net
+
 
 
 
@@ -289,6 +298,7 @@ def main():
     mia_score=measure_mia(distilled_net, forget_loader, test_loader, device)
     retain_acc=test(distilled_net, retain_loader, device)
     forget_acc=test(distilled_net, forget_loader, device)
+
 
 
     print('\nDistillation-Unlearning Stats: ')
@@ -310,6 +320,10 @@ def main():
 
     file_path = os.path.join(result_directory_path,'distillation_unlearning_stats.csv')
     df.to_csv(file_path, index=False)
+
+    del distilled_net
+    del teacher_net
+    del student_net
 
 
 
@@ -356,6 +370,12 @@ def main():
     file_path = os.path.join(result_directory_path,'bad_teacher_distillation_unlearning_stats.csv')
     df.to_csv(file_path , index=False)
 
+    del distilled_net
+    del teacher_net
+    del student_net
+    del bad_teacher_net
+
+
 
 
     #-----------------------Sparsification based Method---------------------------------------------------------------------------------
@@ -392,6 +412,10 @@ def main():
     file_path = os.path.join(result_directory_path,'sparsification_unlearning_stats.csv')
     df.to_csv(file_path, index=False)
 
+    del sparsified_net
+    del naive_net
+
+
 
     #-----------------------Pruning based Method---------------------------------------------------------------------------------
     vgg16=modify_vgg16(channel, im_size[0], num_classes)
@@ -426,6 +450,9 @@ def main():
 
     file_path = os.path.join(result_directory_path,'prunning_unlearning_stats.csv')
     df.to_csv(file_path, index=False)
+
+    del pruned_net
+    del naive_net
 
 
 if __name__ == '__main__':
