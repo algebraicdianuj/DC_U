@@ -31,7 +31,7 @@ chmod +x runner.sh
 ### CNN | CIFAR-10 (downsampled->100 images per class)
 
 ```bash
-cd sota_method_performance/vgg16_cifar10
+cd sota_method_performance/cnn_cifar10
 chmod +x runner.sh
 ./runner.sh
 ```
