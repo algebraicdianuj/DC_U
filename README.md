@@ -37,6 +37,15 @@ chmod +x runner.sh
 ```
 
 
+### Weak CNN | CIFAR-10 (downsampled->100 images per class)
+
+```bash
+cd sota_method_performance/weaker_cnn_cifar10
+chmod +x runner.sh
+./runner.sh
+```
+
+
 ## Random Forgetting (10 Percent) (Table-1)
 ### MLP | CIFAR10
 ```bash
