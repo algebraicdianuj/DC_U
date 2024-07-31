@@ -300,6 +300,13 @@ jupyter nbconvert --to notebook --execute plotter.ipynb --output plotter.ipynb
 
 - [Good and Bad Teacher Distillation based Unlearning](https://github.com/vikram2000b/bad-teaching-unlearning)
 
+## SOTA Dataset Condensation References
+- [Dataset condensation with gradient matching](https://github.com/VICO-UoE/DatasetCondensation)
+  
+- [Dataset condensation with distribution matching](https://github.com/VICO-UoE/DatasetCondensation)
+  
+- [Improved distribution matching for dataset condensation](https://github.com/uitrbn/IDM)
+
 
 
 
