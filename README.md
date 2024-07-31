@@ -307,6 +307,8 @@ jupyter nbconvert --to notebook --execute plotter.ipynb --output plotter.ipynb
   
 - [Improved distribution matching for dataset condensation](https://github.com/uitrbn/IDM)
 
+- [Dataset Condensation via Efficient Synthetic-Data Parameterization](https://github.com/snu-mllab/Efficient-Dataset-Condensation)
+
 
 
 
