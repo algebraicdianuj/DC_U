@@ -272,7 +272,7 @@ jupyter nbconvert --to notebook --execute plotty.ipynb --output plotty.ipynb
 ```
 
 
-## Dataset Condensation
+## Dataset Condensation Benchmarking (SOTA mentioned [here](#sota-dataset-condensation-references))
 ```bash
 cd ds_condensation_benchmarking
 # DS condensation via Distribution Matching
@@ -301,6 +301,8 @@ jupyter nbconvert --to notebook --execute plotter.ipynb --output plotter.ipynb
 - [Distillation based Unlearning](https://github.com/meghdadk/SCRUB)
 
 - [Good and Bad Teacher Distillation based Unlearning](https://github.com/vikram2000b/bad-teaching-unlearning)
+
+
 
 ## SOTA Dataset Condensation References
 - [Dataset condensation with gradient matching](https://github.com/VICO-UoE/DatasetCondensation)
