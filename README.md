@@ -280,7 +280,7 @@ python distribution_matching.py
 # DS condensation via Gradient Matching
 python gradient_matching.py
 # DS condensation via Fast Distribution Matching
-python mi_dataset_condensation_proposed_lite.py
+python fast_dataset_condensation_proposed.py
 # DS condensation via Model Inversion
 python mi_dataset_condensation_proposed.py
 
