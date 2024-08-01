@@ -309,6 +309,7 @@ jupyter nbconvert --to notebook --execute plotter.ipynb --output plotter.ipynb
 
 - [Dataset Condensation via Efficient Synthetic-Data Parameterization](https://github.com/snu-mllab/Efficient-Dataset-Condensation)
 
+- [Dataset Distillation via Matching Training Trajectories](https://github.com/GeorgeCazenavette/mtt-distillation/tree/main)
 
 
 
