@@ -315,6 +315,8 @@ jupyter nbconvert --to notebook --execute plotter.ipynb --output plotter.ipynb
 
 - [Dataset Distillation via Matching Training Trajectories](https://github.com/GeorgeCazenavette/mtt-distillation/tree/main)
 
+- [Dataset Distillation via Minimax Diffusion](https://github.com/vimar-gu/MinimaxDiffusion)
+
 
 
 
