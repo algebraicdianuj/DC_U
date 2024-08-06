@@ -277,12 +277,34 @@ jupyter nbconvert --to notebook --execute plotty.ipynb --output plotty.ipynb
 cd ds_condensation_benchmarking
 # DS condensation via Distribution Matching
 python distribution_matching.py
+
 # DS condensation via Gradient Matching
 python gradient_matching.py
+
 # DS condensation via Fast Distribution Matching
 python fast_dataset_condensation_proposed.py
+
 # DS condensation via Model Inversion
 python mi_dataset_condensation_proposed.py
+
+# DS distillation via minimax-diffusion
+https://github.com/algebraicdianuj/MinimaxDiffusion.git
+cd MinimaxDiffusion
+chmod +x initiator.sh
+chmod +x commands.sh
+./initiator.sh
+./commands.sh
+
+# DS condensation via improved distribution matching
+python idm_my_version.py
+
+# DS condensation via matching training trajectories
+python tdc_my_version.py
+
+# DS condensation via efficient synthetic data parameterization
+python edc_my_version.py
+
+
 
 cd..
 # copy csv files from ds_condensation_benchmarking to plotting/dataset_condensation
