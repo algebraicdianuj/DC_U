@@ -22,7 +22,7 @@ warnings.filterwarnings("ignore")
 
 def main():
     batch_train=256
-    lr_img = 10.0  # authors consider default 1000
+    lr_img = 1.0  # authors consider default 1000
     lr_net = 1e-3
     lr_lr=1e-5
     Iteration=1000
