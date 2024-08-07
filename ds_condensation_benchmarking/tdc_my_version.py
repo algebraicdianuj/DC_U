@@ -15,11 +15,16 @@ import random
 from torch.utils.data import Dataset
 import time
 import pandas as pd
+import warnings 
+warnings.filterwarnings("ignore")
+
+
 
 def main():
     batch_train=256
-    lr_img = 1.0   # authors consider default 1000
+    lr_img = 10.0  # authors consider default 1000
     lr_net = 1e-3
+    lr_lr=1e-5
     Iteration=1000
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     batch_size = 256
@@ -148,13 +153,6 @@ def main():
 
         starting_time = time.time()
 
-        if ipc == 1:
-            outer_loop, inner_loop = 1, 1
-        elif ipc == 10:
-            outer_loop, inner_loop = 10, 50
-        elif ipc == 50:
-            outer_loop, inner_loop = 50, 10
-
 
         ''' organize the real dataset '''
         images_all = []
@@ -178,9 +176,16 @@ def main():
         image_syn = torch.randn(size=(num_classes*ipc, channel, im_size[0], im_size[1]), dtype=torch.float, requires_grad=True, device=device)
         label_syn = torch.tensor([np.ones(ipc)*i for i in range(num_classes)], dtype=torch.long, requires_grad=False, device=device).view(-1) # [0,0,0, 1,1,1, ..., 9,9,9]
 
+        # ''' copy the real data to synthetic data for initialization'''
+        for c in range(num_classes):
+            image_syn.data[c*ipc:(c+1)*ipc] = get_images(c, ipc).detach().data
 
+        syn_lr=torch.tensor(lr_teacher, dtype=torch.float, requires_grad=False, device=device)
+        syn_lr = syn_lr.detach().to(device).requires_grad_(True)
         ''' training '''
         optimizer_img = torch.optim.SGD([image_syn, ], lr=lr_img, momentum=0.5) # optimizer_img for synthetic data
+        optimizer_lr=torch.optim.SGD([syn_lr, ], lr=lr_lr, momentum=0.5)
+        # optimizer_img = torch.optim.Adam([image_syn, ], lr=lr_img) # optimizer_img for synthetic data   
         optimizer_img.zero_grad()
         criterion = nn.CrossEntropyLoss().to(device)
 
@@ -212,7 +217,8 @@ def main():
             student_model.train()
 
             # Get the starting and target parameters
-            start_epoch= np.random.randint(0,max_start_epoch)
+            # start_epoch= np.random.randint(0,max_start_epoch)
+            start_epoch=max_start_epoch-1
             starting_params = trajectory_teacher_params[start_epoch][0]
             target_params = trajectory_teacher_params[start_epoch+teacher_epoch][0]
             target_params = torch.cat([p.data.to(device).reshape(-1) for p in target_params], 0)
@@ -241,17 +247,27 @@ def main():
             param_loss /= param_dist
             grand_loss = param_loss
             optimizer_img.zero_grad()
-            # grand_loss.backward(retain_graph=True)
-            grand_loss.backward()
+            optimizer_lr.zero_grad()
+            grand_loss.backward(retain_graph=True)
+            
+            # grand_loss.backward()
             optimizer_img.step()
+            optimizer_lr.step()
             print('Iter %d, Loss: %.4f'%(it, grand_loss.item()))
+            image_syn.data = torch.clamp(image_syn.data, 0, 1)
+
+
+            # save images at intervals
+            # if it % 10 == 0:
+            #     save_image(image_syn, 'synthetic_images_%d.png'%it, nrow=ipc, normalize=True)
+
 
         ending_time = time.time()
         running_time.append(ending_time - starting_time)
         ipc_record.append(ipc)
 
 
-        image_syn_train, label_syn_train = copy.deepcopy(image_syn.detach()), copy.deepcopy(label_syn.detach())  # avoid any unaware modification
+        image_syn_train, label_syn_train = copy.deepcopy(image_syn.detach()), copy.deepcopy(label_syn.detach()) 
         dst_syn_train = TensorDataset(image_syn_train, label_syn_train)
         trainloader = torch.utils.data.DataLoader(dst_syn_train, batch_size=batch_train, shuffle=True, num_workers=0)
 
@@ -271,6 +287,7 @@ def main():
 
         test_acc=test(testing_net, ref_training_loader, device)
         test_accs.append(test_acc)
+        print('Test Accuracy: %.4f'%test_acc)
 
 
     stat_data = {
