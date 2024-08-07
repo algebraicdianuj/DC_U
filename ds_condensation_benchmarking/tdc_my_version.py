@@ -18,8 +18,8 @@ import pandas as pd
 
 def main():
     batch_train=256
-    lr_img=0.1   # authors consider default 1000
-    lr_net=1e-3
+    lr_img = 1.0   # authors consider default 1000
+    lr_net = 1e-3
     Iteration=1000
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     batch_size = 256
@@ -27,15 +27,17 @@ def main():
     batch_real = 256
     channel = 3
     im_size = (32, 32)
-    mean = [0.4914, 0.4822, 0.4465]
-    std = [0.2023, 0.1994, 0.2010]
+    # mean = [0.4914, 0.4822, 0.4465]
+    # std = [0.2023, 0.1994, 0.2010]
+    mean=[0.5, 0.5, 0.5]
+    std=[0.5, 0.5, 0.5]
     transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize(mean=mean, std=std)])
     dst_train = datasets.CIFAR10('./data', train=True, download=True, transform=transform) # no augmentation
     student_steps=20
     max_start_epoch=25
     teacher_epoch=3
     teacher_steps=50
-    lr_teacher=1e-2
+    lr_teacher=1e-1
     lr_student=1e-2
     ref_training_loader=torch.utils.data.DataLoader(dst_train, batch_size=batch_size, shuffle=True, num_workers=0)
 
