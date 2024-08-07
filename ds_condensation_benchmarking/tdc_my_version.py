@@ -244,9 +244,9 @@ def main():
             optimizer_img.step()
             print('Iter %d, Loss: %.4f'%(it, grand_loss.item()))
 
-            ending_time = time.time()
-            running_time.append(ending_time - starting_time)
-            ipc_record.append(ipc)
+        ending_time = time.time()
+        running_time.append(ending_time - starting_time)
+        ipc_record.append(ipc)
 
 
         image_syn_train, label_syn_train = copy.deepcopy(image_syn.detach()), copy.deepcopy(label_syn.detach())  # avoid any unaware modification
