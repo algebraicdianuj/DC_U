@@ -76,7 +76,6 @@ def main():
     channel = 3
     im_size = (32, 32)
     lr_img = 5e-3  # Authors consider default 5e-3
-    net.to(device)
     factor = max(1, int(np.sqrt(ipc)))
     decode_type = 'bound'   # single, multi, bound
     max_size = 128   # Authors consider default 128
