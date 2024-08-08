@@ -18,7 +18,7 @@ import time
 from torch.utils.data import Dataset
 import pandas as pd
 from math import ceil
-
+import os
 
 def main():
     # Define your network architecture (MLP)
@@ -65,43 +65,24 @@ def main():
     #------------------Train the Net--------------------------------
 
 
-    net= MLP(input_size=channel * im_size[0] * im_size[1], hidden_size=128, output_size=num_classes).to(device)
-    criterion = nn.CrossEntropyLoss()
-    optimizer=torch.optim.Adam(net.parameters(), lr=1e-3)
 
-    # Teacher training before starting the dataset distillation process
-    for epochy in range(30):
-        for batch_idx, (data, target) in enumerate(train_loader):
-            data, target = data.to(device), target.to(device)
-            output = net(data) 
-            loss = criterion(output, target)
-            optimizer.zero_grad()
-            loss.backward()
-            optimizer.step()
-
-
-    del loss
-    del output
-
-    # make all parameters non-trainable, so as to make image_syn the only trainable parameter
-    for param in list(net.parameters()):
-        param.requires_grad = False
-    #---------------------------------------------------------------------------
-    net.eval()
 
 
     #--------Hyperparameters-----------------------------------------------
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    condense_iterations=20000 #Authors consider default 20000
+    condense_iterations=500 #Authors consider default 5000
     num_classes = 10
     batch_real = 256
     channel = 3
     im_size = (32, 32)
-    lr_img = 1e-1  # Authors consider default 1.0
+    lr_img = 5e-3  # Authors consider default 5e-3
     net.to(device)
     factor = max(1, int(np.sqrt(ipc)))
-    decode_type = 'multi'
+    decode_type = 'bound'   # single, multi, bound
     max_size = 128   # Authors consider default 128
+    fix_iter = -1  # Authors consider default 1000
+    model_epochs=30
+    inner_epochs=100   # Authors consider default 100
     #----------------------------------------------------------------------
 
 
@@ -197,7 +178,7 @@ def main():
         return data, target
     
 
-    def sample(S_images, S_targets, ipc, c, decode_type, size, max_size=128):
+    def sample(S_images, S_targets, ipc, c, decode_type, size, factor, max_size=128):
         """Sample synthetic data per class
         """
         idx_from = ipc * c
@@ -274,6 +255,12 @@ def main():
 
     for exp in range(len(ipc_trys)):
         print('\n================== Exp %d ==================\n '%exp)
+        if os.path.exists(f'syn_data_{exp}'):
+            os.system(f'rm -r syn_data_{exp}')
+        os.makedirs(f'syn_data_{exp}')
+
+
+        factor = max(1, int(np.sqrt(ipc)))
 
         ipc=ipc_trys[exp]
         starting_time = time.time()
@@ -332,24 +319,61 @@ def main():
 
         #---Starting the condensation process
         for it in range(condense_iterations):
+
+            if it % fix_iter==0:
+                net= MLP(input_size=channel * im_size[0] * im_size[1], hidden_size=128, output_size=num_classes).to(device)
+                criterion = nn.CrossEntropyLoss()
+                optimizer=torch.optim.Adam(net.parameters(), lr=1e-3)
+
+                # Teacher training before starting the dataset distillation process
+                for epochy in range(model_epochs):
+                    for batch_idx, (data, target) in enumerate(train_loader):
+                        data, target = data.to(device), target.to(device)
+                        output = net(data) 
+                        loss = criterion(output, target)
+                        optimizer.zero_grad()
+                        loss.backward()
+                        optimizer.step()
+
+
+                del loss
+                del output
+
+                # make all parameters non-trainable, so as to make image_syn the only trainable parameter
+                for param in list(net.parameters()):
+                    param.requires_grad = False
+                #---------------------------------------------------------------------------
+                net.eval()
+
             # Train Synthetic Data
-
             loss_syn = torch.tensor(0.0).to(device)
-            for c in range(num_classes):
-                img_real = get_images(c, batch_real)
-                img_real=img_real.to(device)
-                # img_syn = image_syn[c * ipc: (c + 1) * ipc].reshape((ipc, 3, 32, 32))
-                img_syn,lab_syn = sample(image_syn, label_syn, ipc, c, decode_type, im_size, max_size=max_size)
+            for in_it in range(inner_epochs):
 
-                output_real = net.feature(img_real).detach()
-                output_syn = net.feature(img_syn)
+                for c in range(num_classes):
 
-                loss_syn+= torch.sum((torch.mean(output_real, dim=0) - torch.mean(output_syn, dim=0))**2)
+                    img_real = get_images(c, batch_real)
+                    img_real=img_real.to(device)
+                    # img_syn = image_syn[c * ipc: (c + 1) * ipc].reshape((ipc, 3, 32, 32))
+                    # print(image_syn.shape)  
+                    
+                    img_syn,lab_syn = sample(image_syn, label_syn, ipc, c, decode_type, im_size, factor=factor, max_size=max_size)
+    
+                    output_real = net.feature(img_real).detach()
+                    output_syn = net.feature(img_syn)
 
+                    loss_syn+= torch.sum((torch.mean(output_real, dim=0) - torch.mean(output_syn, dim=0))**2)
 
-            optimizer_img.zero_grad()
-            loss_syn.backward()
-            optimizer_img.step()
+                    optimizer_img.zero_grad()
+                    loss_syn.backward()
+                    optimizer_img.step()
+                    image_syn.data = torch.clamp(image_syn.data, 0, 1)
+
+                    # if it % 10 == 0:
+                    #     print('Iter %d, Loss: %.4f' % (it, loss_syn.item()))
+
+                    #     # save the synthetic data
+                    #     torchvision.utils.save_image(image_syn, f'syn_data_{exp}/syn_data_{it}.png', nrow=ipc, normalize=True)
+
 
 
 
@@ -378,6 +402,7 @@ def main():
 
         test_acc=test(testing_net, train_loader, device)
         test_accs.append(test_acc)
+        print('Test Accuracy: %.4f' % test_acc)
 
 
     stat_data = {
