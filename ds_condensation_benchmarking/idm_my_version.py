@@ -325,6 +325,8 @@ def main():
                     loss_syn.backward()
                     optimizer_img.step()
 
+                    image_syn.data = torch.clamp(image_syn.data, min=0., max=1.)
+
             
             shuffled_net_index = list(range(len(net_list)))
             random.shuffle(shuffled_net_index)
