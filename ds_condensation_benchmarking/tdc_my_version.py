@@ -3,6 +3,7 @@ import time
 import copy
 import argparse
 import numpy as np
+import torchvision
 import torch
 import torch.nn as nn
 from torchvision.utils import save_image
@@ -22,9 +23,9 @@ warnings.filterwarnings("ignore")
 
 def main():
     batch_train=256
-    lr_img = 1.0  # authors consider default 1000
+    lr_img = 10.0  # authors consider default 1000
     lr_net = 1e-3
-    lr_lr=1e-5
+    lr_lr = 1e-5
     Iteration=1000
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     batch_size = 256
@@ -44,6 +45,7 @@ def main():
     teacher_steps=50
     lr_teacher=1e-1
     lr_student=1e-2
+    start_epoch=np.random.randint(0,max_start_epoch)
     ref_training_loader=torch.utils.data.DataLoader(dst_train, batch_size=batch_size, shuffle=True, num_workers=0)
 
 
@@ -89,16 +91,6 @@ def main():
             param_length = param.numel()
             param.data = params[start_idx:start_idx + param_length].view(param.shape)
             start_idx += param_length
-        # #find the number of traininable parameters of model
-        # print("=====================================================================================================")
-        # print("Checking if parameters loaded are trainbale")
-        # for name, param in model.named_parameters():
-        #     if param.requires_grad:
-        #         print(name, param.numel())
-        # print('>> Total trainable parameters:', sum(p.numel() for p in model.parameters() if p.requires_grad))
-        # print('>> Total parameters:', sum(p.numel() for p in model.parameters()))
-        # print("=====================================================================================================")
-
 
 
     class TensorDataset(Dataset):
@@ -136,6 +128,14 @@ def main():
                 optimizer.step()
 
 
+
+    def load_params(model, params):
+        start_idx = 0
+        for name, param in model.named_parameters():
+            param_shape = param.shape
+            param_size = param.numel()
+            param.data = params[start_idx:start_idx + param_size].view(param_shape)
+            start_idx += param_size
 
 
 
@@ -209,7 +209,9 @@ def main():
             # trajectory_teacher_params.append([param.detach().clone() for param in teacher_model.parameters()])
             trajectory_teacher_params.append([torch.cat([p.data.to(device).reshape(-1).detach().clone() for p in teacher_model.parameters()], 0)])
 
-        
+        if os.path.exists('synthetic_images'):
+            os.system('rm -rf synthetic_images')
+        os.mkdir('synthetic_images')
 
         for it in range(Iteration):
         
@@ -218,10 +220,15 @@ def main():
 
             # Get the starting and target parameters
             # start_epoch= np.random.randint(0,max_start_epoch)
-            start_epoch=max_start_epoch-1
+            
             starting_params = trajectory_teacher_params[start_epoch][0]
             target_params = trajectory_teacher_params[start_epoch+teacher_epoch][0]
             target_params = torch.cat([p.data.to(device).reshape(-1) for p in target_params], 0)
+
+            # Initialize student model with starting parameters
+            load_params(student_model, starting_params)
+
+
             #initialize student model with starting parameters
             trajectory_student_params = [torch.cat([p.data.to(device).reshape(-1) for p in student_model.parameters()], 0).requires_grad_(True)]
             starting_params = torch.cat([p.data.to(device).reshape(-1) for p in starting_params], 0)
@@ -248,9 +255,8 @@ def main():
             grand_loss = param_loss
             optimizer_img.zero_grad()
             optimizer_lr.zero_grad()
-            grand_loss.backward(retain_graph=True)
-            
-            # grand_loss.backward()
+            # grand_loss.backward(retain_graph=True)
+            grand_loss.backward()
             optimizer_img.step()
             optimizer_lr.step()
             print('Iter %d, Loss: %.4f'%(it, grand_loss.item()))
@@ -259,8 +265,8 @@ def main():
 
             # save images at intervals
             # if it % 10 == 0:
-            #     save_image(image_syn, 'synthetic_images_%d.png'%it, nrow=ipc, normalize=True)
-
+            #     grid = torchvision.utils.make_grid(image_syn, nrow=ipc, normalize=True)
+            #     torchvision.utils.save_image(grid, 'synthetic_images/synthetic_images_%d.png' % it, normalize=True)
 
         ending_time = time.time()
         running_time.append(ending_time - starting_time)
