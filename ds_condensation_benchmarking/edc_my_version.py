@@ -62,14 +62,11 @@ def main():
     device = "cuda" if torch.cuda.is_available() else "cpu"
     im_size = (32, 32)
     channel = 3
-    #------------------Train the Net--------------------------------
-
-
+   
 
 
 
     #--------Hyperparameters-----------------------------------------------
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     condense_iterations=500 #Authors consider default 5000
     num_classes = 10
     batch_real = 256
@@ -311,15 +308,13 @@ def main():
 
 
         ''' training '''
-        optimizer_img = torch.optim.Adam([image_syn, ], lr=lr_img) # optimizer_img for synthetic data
-        optimizer_img.zero_grad()
-
+        optimizer_img = torch.optim.SGD([image_syn, ], lr=lr_img,momentum=0.5) # optimizer_img for synthetic data
 
 
         #---Starting the condensation process
         for it in range(condense_iterations):
-
-            if it % fix_iter==0:
+             #------------------Train the Net--------------------------------
+            if it == 0:
                 net= MLP(input_size=channel * im_size[0] * im_size[1], hidden_size=128, output_size=num_classes).to(device)
                 criterion = nn.CrossEntropyLoss()
                 optimizer=torch.optim.Adam(net.parameters(), lr=1e-3)
@@ -346,6 +341,8 @@ def main():
 
             # Train Synthetic Data
             loss_syn = torch.tensor(0.0).to(device)
+            loss_syn_cum=0.0
+            image_syn.data = torch.clamp(image_syn.data, 0, 1)
             for in_it in range(inner_epochs):
 
                 for c in range(num_classes):
@@ -360,18 +357,19 @@ def main():
                     output_real = net.feature(img_real).detach()
                     output_syn = net.feature(img_syn)
 
-                    loss_syn+= torch.sum((torch.mean(output_real, dim=0) - torch.mean(output_syn, dim=0))**2)
+                    loss_syn= torch.sum((torch.mean(output_real, dim=0) - torch.mean(output_syn, dim=0))**2)
+                    loss_syn_cum+=loss_syn.item()
 
                     optimizer_img.zero_grad()
                     loss_syn.backward()
                     optimizer_img.step()
-                    image_syn.data = torch.clamp(image_syn.data, 0, 1)
+                    
 
-                    # if it % 10 == 0:
-                    #     print('Iter %d, Loss: %.4f' % (it, loss_syn.item()))
+            # if it % 10 == 0:
+            #     print('Iter %d, Loss_syn: %.4f' % (it, loss_syn_cum//num_classes))
 
-                    #     # save the synthetic data
-                    #     torchvision.utils.save_image(image_syn, f'syn_data_{exp}/syn_data_{it}.png', nrow=ipc, normalize=True)
+            #     # save the synthetic data
+            #     torchvision.utils.save_image(image_syn, f'syn_data_{ipc}/syn_data_{it}.png', nrow=ipc, normalize=True)
 
 
 
