@@ -251,14 +251,17 @@ def main():
 
     for exp in range(len(ipc_trys)):
         print('\n================== Exp %d ==================\n '%exp)
-        if os.path.exists(f'syn_data_{exp}'):
-            os.system(f'rm -r syn_data_{exp}')
-        os.makedirs(f'syn_data_{exp}')
 
 
         factor = max(1, int(np.sqrt(ipc)))
 
         ipc=ipc_trys[exp]
+
+        if os.path.exists(f'syn_data_{ipc}'):
+            os.system(f'rm -r syn_data_{ipc}')
+        os.makedirs(f'syn_data_{ipc}')
+
+
         starting_time = time.time()
 
         ''' organize the real dataset '''
