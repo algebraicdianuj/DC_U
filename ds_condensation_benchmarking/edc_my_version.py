@@ -72,9 +72,9 @@ def main():
     batch_real = 256
     channel = 3
     im_size = (32, 32)
-    lr_img = 5e-3  # Authors consider default 5e-3
+    lr_img = 1e-3 # Authors consider default 5e-3
     factor = max(1, int(np.sqrt(ipc)))
-    decode_type = 'bound'   # single, multi, bound
+    decode_type = 'multi'   # single, multi, bound
     max_size = 128   # Authors consider default 128
     fix_iter = -1  # Authors consider default 1000
     model_epochs=30
@@ -311,7 +311,8 @@ def main():
 
 
         ''' training '''
-        optimizer_img = torch.optim.SGD([image_syn, ], lr=lr_img,momentum=0.5) # optimizer_img for synthetic data
+        # optimizer_img = torch.optim.SGD([image_syn, ], lr=lr_img,momentum=0.5) # optimizer_img for synthetic data
+        optimizer_img = torch.optim.Adam([image_syn, ], lr=lr_img) # optimizer_img for synthetic data
 
 
         #---Starting the condensation process
@@ -343,10 +344,11 @@ def main():
                 net.eval()
 
             # Train Synthetic Data
-            loss_syn = torch.tensor(0.0).to(device)
-            loss_syn_cum=0.0
+            
             image_syn.data = torch.clamp(image_syn.data, 0, 1)
             for in_it in range(inner_epochs):
+                # loss_syn = torch.tensor(0.0).to(device)
+                loss_syn_cum=0.0
 
                 for c in range(num_classes):
 
@@ -360,19 +362,19 @@ def main():
                     output_real = net.feature(img_real).detach()
                     output_syn = net.feature(img_syn)
 
-                    loss_syn= torch.sum((torch.mean(output_real, dim=0) - torch.mean(output_syn, dim=0))**2)
-                    loss_syn_cum+=loss_syn.item()
+                    loss_syn = torch.sum((torch.mean(output_real, dim=0) - torch.mean(output_syn, dim=0))**2)
+                    loss_syn_cum += loss_syn.item()
 
                     optimizer_img.zero_grad()
                     loss_syn.backward()
                     optimizer_img.step()
                     
 
-            # if it % 10 == 0:
-            #     print('Iter %d, Loss_syn: %.4f' % (it, loss_syn_cum//num_classes))
+                # if it % 10 == 0 and in_it == 0:
+                #     print('Iter %d, Loss_syn: %.4f' % (it, loss_syn_cum//num_classes))
 
-            #     # save the synthetic data
-            #     torchvision.utils.save_image(image_syn, f'syn_data_{ipc}/syn_data_{it}.png', nrow=ipc, normalize=True)
+                #     # save the synthetic data
+                #     torchvision.utils.save_image(image_syn, f'syn_data_{ipc}/syn_data_{it}.png', nrow=ipc, normalize=True)
 
 
 
