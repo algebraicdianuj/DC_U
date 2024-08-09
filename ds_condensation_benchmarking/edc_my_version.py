@@ -554,6 +554,6 @@ def main(args):
 
 if __name__ == '__main__':
     parser=argparse.ArgumentParser()
-    parser.add_argument('--do_aug',default=False,required=True,type='str')
+    parser.add_argument('--do_aug',default=False,type='str')
     args=parser.parse_args()
     main(args)
