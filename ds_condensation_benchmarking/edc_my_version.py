@@ -185,6 +185,26 @@ def main():
         data, target = decode(data, target, factor, decode_type, size, bound=max_size)
         data, target = subsample(data, target, max_size=max_size)
         return data, target
+
+
+    def get_condensed_loader(image_syn,label_syn,ipc,num_classes,decode_type,im_size,factor,max_size,condense_iterations,net,device):
+        data_dec = []
+        target_dec = []
+        for c in range(num_classes):
+            dx_from = ipc * c
+            dx_to = ipc * (c + 1)
+            data = image_syn[dx_from:dx_to].detach()
+            target = label_syn[dx_from:dx_to].detach()
+
+            data, target = decode(data, target, factor, decode_type, im_size, bound=max_size)
+            data_dec.append(data)
+            target_dec.append(target)
+
+        data_dec = torch.cat(data_dec)
+        target_dec = torch.cat(target_dec)
+        train_dataset = TensorDataset(data_dec.cpu(), target_dec.cpu())
+        train_loader=torch.utils.data.DataLoader(train_dataset, batch_size=32, shuffle=True, num_workers=0)
+        return train_loader
     
 
 
@@ -372,16 +392,6 @@ def main():
 
                 # if it % 10 == 0:
                 #     print('Iter %d, Loss_syn: %.4f' % (it, loss_syn_cum//num_classes))
-                #     # save the synthetic data
-                #     img_syn_copy = image_syn.detach().clone()
-                #     img_syn_copy = img_syn_copy.cpu()
-                #     img_syn_copy = decode(img_syn_copy, label_syn, factor, decode_type, im_size, bound=max_size)
-                #     torchvision.utils.save_image(image_syn, f'syn_data_{ipc}/syn_data_{it}.png', nrow=ipc, normalize=True)
-    
-
-
-
-
 
 
 
@@ -389,10 +399,7 @@ def main():
         running_time.append(ending_time - starting_time)
         ipc_record.append(ipc)
 
-        image_syn,label_syn=decode(image_syn, label_syn, factor, decode_type, im_size, bound=max_size)
-        image_syn_train, label_syn_train = copy.deepcopy(image_syn.detach()), copy.deepcopy(label_syn.detach())
-        dst_syn_train = TensorDataset(image_syn_train, label_syn_train)
-        trainloader = torch.utils.data.DataLoader(dst_syn_train, batch_size=32, shuffle=True, num_workers=0)
+        trainloader=get_condensed_loader(image_syn,label_syn,ipc,num_classes,decode_type,im_size,factor,max_size,condense_iterations,net,device)
 
         testing_net=MLP(input_size=channel * im_size[0] * im_size[1], hidden_size=128, output_size=num_classes).to(device)
         optim_testing_net=torch.optim.Adam(testing_net.parameters(), lr=1e-3)
