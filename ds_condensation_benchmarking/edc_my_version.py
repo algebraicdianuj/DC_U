@@ -546,14 +546,17 @@ def main(args):
 
     df = pd.DataFrame(stat_data)
 
-
-    df.to_csv('benchmark_EDM_without_DSA.csv', index=False)
+    if args.do_aug:
+        df.to_csv('benchmark_ESDM_with_augmentation.csv', index=False)
+    else:
+        df.to_csv('benchmark_ESDM_without_augmentation.csv', index=False)
+        
 
 
 
 
 if __name__ == '__main__':
     parser=argparse.ArgumentParser()
-    parser.add_argument('--do_aug',default=False,type='str')
+    parser.add_argument('--do_aug',default=False,type=bool)
     args=parser.parse_args()
     main(args)
