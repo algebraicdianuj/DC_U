@@ -370,11 +370,16 @@ def main():
                     optimizer_img.step()
                     
 
-                # if it % 10 == 0 and in_it == 0:
+                # if it % 10 == 0:
                 #     print('Iter %d, Loss_syn: %.4f' % (it, loss_syn_cum//num_classes))
-
                 #     # save the synthetic data
+                #     img_syn_copy = image_syn.detach().clone()
+                #     img_syn_copy = img_syn_copy.cpu()
+                #     img_syn_copy = decode(img_syn_copy, label_syn, factor, decode_type, im_size, bound=max_size)
                 #     torchvision.utils.save_image(image_syn, f'syn_data_{ipc}/syn_data_{it}.png', nrow=ipc, normalize=True)
+    
+
+
 
 
 
@@ -384,7 +389,8 @@ def main():
         running_time.append(ending_time - starting_time)
         ipc_record.append(ipc)
 
-        image_syn_train, label_syn_train = copy.deepcopy(image_syn.detach()), copy.deepcopy(label_syn.detach())  # avoid any unaware modification
+        image_syn,label_syn=decode(image_syn, label_syn, factor, decode_type, im_size, bound=max_size)
+        image_syn_train, label_syn_train = copy.deepcopy(image_syn.detach()), copy.deepcopy(label_syn.detach())
         dst_syn_train = TensorDataset(image_syn_train, label_syn_train)
         trainloader = torch.utils.data.DataLoader(dst_syn_train, batch_size=32, shuffle=True, num_workers=0)
 
