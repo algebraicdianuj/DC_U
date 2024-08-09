@@ -79,6 +79,7 @@ def main():
     fix_iter = -1  # Authors consider default 1000
     model_epochs=2
     inner_epochs=100   # Authors consider default 100
+    do_condense=False   # Authors consider default as True
     #----------------------------------------------------------------------
 
 
@@ -205,6 +206,119 @@ def main():
         train_dataset = TensorDataset(data_dec.cpu(), target_dec.cpu())
         train_loader=torch.utils.data.DataLoader(train_dataset, batch_size=32, shuffle=True, num_workers=0)
         return train_loader
+
+
+        def diff_aug(x, strategy='color_crop_cutout_flip_scale_rotate', ratio_cutout=0.5, prob_flip=0.5,
+             ratio_scale=1.2, ratio_rotate=15.0, ratio_crop_pad=0.125, brightness=1.0,
+             saturation=2.0, contrast=0.5, single_aug=True, seed=-1):
+    
+        def set_seed(seed):
+            if seed > 0:
+                np.random.seed(seed)
+                torch.random.manual_seed(seed)
+
+        def scale_fn(x):
+            sx = torch.rand(x.shape[0], device=x.device) * (ratio_scale - 1.0 / ratio_scale) + 1.0 / ratio_scale
+            sy = torch.rand(x.shape[0], device=x.device) * (ratio_scale - 1.0 / ratio_scale) + 1.0 / ratio_scale
+            theta = torch.stack([sx, torch.zeros_like(sx), torch.zeros_like(sx),
+                                torch.zeros_like(sx), sy, torch.zeros_like(sx)], dim=1).view(-1, 2, 3)
+            grid = F.affine_grid(theta, x.shape, align_corners=False)
+            return F.grid_sample(x, grid, align_corners=False)
+
+        def rotate_fn(x):
+            theta = (torch.rand(x.shape[0], device=x.device) - 0.5) * 2 * ratio_rotate / 180 * np.pi
+            cos_theta = torch.cos(theta)
+            sin_theta = torch.sin(theta)
+            theta = torch.stack([cos_theta, -sin_theta, torch.zeros_like(theta),
+                                sin_theta, cos_theta, torch.zeros_like(theta)], dim=1).view(-1, 2, 3)
+            grid = F.affine_grid(theta, x.shape, align_corners=False)
+            return F.grid_sample(x, grid, align_corners=False)
+
+        def flip_fn(x):
+            randf = torch.rand(x.size(0), 1, 1, 1, device=x.device)
+            return torch.where(randf < prob_flip, x.flip(3), x)
+
+        def brightness_fn(x):
+            randb = torch.rand(x.size(0), 1, 1, 1, dtype=x.dtype, device=x.device)
+            return x + (randb - 0.5) * brightness
+
+        def saturation_fn(x):
+            x_mean = x.mean(dim=1, keepdim=True)
+            rands = torch.rand(x.size(0), 1, 1, 1, dtype=x.dtype, device=x.device)
+            return (x - x_mean) * (rands * saturation) + x_mean
+
+        def contrast_fn(x):
+            x_mean = x.mean(dim=[1, 2, 3], keepdim=True)
+            randc = torch.rand(x.size(0), 1, 1, 1, dtype=x.dtype, device=x.device)
+            return (x - x_mean) * (randc + contrast) + x_mean
+
+        def translate_fn(x):
+            shift_y = int(x.size(3) * ratio_crop_pad + 0.5)
+            translation_y = torch.randint(-shift_y, shift_y + 1, size=[x.size(0), 1, 1], device=x.device)
+            grid_batch, grid_x, grid_y = torch.meshgrid(
+                torch.arange(x.size(0), dtype=torch.long, device=x.device),
+                torch.arange(x.size(2), dtype=torch.long, device=x.device),
+                torch.arange(x.size(3), dtype=torch.long, device=x.device),
+            )
+            grid_y = torch.clamp(grid_y + translation_y + 1, 0, x.size(3) + 1)
+            x_pad = F.pad(x, (1, 1))
+            return x_pad.permute(0, 2, 3, 1).contiguous()[grid_batch, grid_x, grid_y].permute(0, 3, 1, 2)
+
+        def crop_fn(x):
+            shift_x, shift_y = int(x.size(2) * ratio_crop_pad + 0.5), int(x.size(3) * ratio_crop_pad + 0.5)
+            translation_x = torch.randint(-shift_x, shift_x + 1, size=[x.size(0), 1, 1], device=x.device)
+            translation_y = torch.randint(-shift_y, shift_y + 1, size=[x.size(0), 1, 1], device=x.device)
+            grid_batch, grid_x, grid_y = torch.meshgrid(
+                torch.arange(x.size(0), dtype=torch.long, device=x.device),
+                torch.arange(x.size(2), dtype=torch.long, device=x.device),
+                torch.arange(x.size(3), dtype=torch.long, device=x.device),
+            )
+            grid_x = torch.clamp(grid_x + translation_x + 1, 0, x.size(2) + 1)
+            grid_y = torch.clamp(grid_y + translation_y + 1, 0, x.size(3) + 1)
+            x_pad = F.pad(x, (1, 1, 1, 1))
+            return x_pad.permute(0, 2, 3, 1).contiguous()[grid_batch, grid_x, grid_y].permute(0, 3, 1, 2)
+
+        def cutout_fn(x):
+            cutout_size = int(x.size(2) * ratio_cutout + 0.5), int(x.size(3) * ratio_cutout + 0.5)
+            offset_x = torch.randint(0, x.size(2) + (1 - cutout_size[0] % 2), size=[x.size(0), 1, 1], device=x.device)
+            offset_y = torch.randint(0, x.size(3) + (1 - cutout_size[1] % 2), size=[x.size(0), 1, 1], device=x.device)
+            grid_batch, grid_x, grid_y = torch.meshgrid(
+                torch.arange(x.size(0), dtype=torch.long, device=x.device),
+                torch.arange(cutout_size[0], dtype=torch.long, device=x.device),
+                torch.arange(cutout_size[1], dtype=torch.long, device=x.device),
+            )
+            grid_x = torch.clamp(grid_x + offset_x - cutout_size[0] // 2, min=0, max=x.size(2) - 1)
+            grid_y = torch.clamp(grid_y + offset_y - cutout_size[1] // 2, min=0, max=x.size(3) - 1)
+            mask = torch.ones(x.size(0), x.size(2), x.size(3), dtype=x.dtype, device=x.device)
+            mask[grid_batch, grid_x, grid_y] = 0
+            return x * mask.unsqueeze(1)
+
+        aug_fn = {
+            'color': [brightness_fn, saturation_fn, contrast_fn],
+            'crop': [crop_fn],
+            'cutout': [cutout_fn],
+            'flip': [flip_fn],
+            'scale': [scale_fn],
+            'rotate': [rotate_fn],
+            'translate': [translate_fn],
+        }
+
+        if strategy == '' or strategy.lower() == 'none':
+            return x
+
+        strategy_list = strategy.lower().split('_')
+        
+        for aug in strategy_list:
+            if aug in aug_fn:
+                if single_aug:
+                    set_seed(seed)
+                    x = aug_fn[aug][0](x)
+                else:
+                    for f in aug_fn[aug]:
+                        set_seed(seed)
+                        x = f(x)
+
+        return x.contiguous()
     
 
 
@@ -378,6 +492,9 @@ def main():
                     # print(image_syn.shape)  
                     
                     img_syn,lab_syn = sample(image_syn, label_syn, ipc, c, decode_type, im_size, factor=factor, max_size=max_size)
+
+                    if do_condense:
+                        img_syn = diff_aug(img_syn, strategy='color_crop_cutout_flip_scale_rotate')
     
                     output_real = net.feature(img_real).detach()
                     output_syn = net.feature(img_syn)
