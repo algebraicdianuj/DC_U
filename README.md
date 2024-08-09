@@ -301,9 +301,11 @@ python idm_my_version.py
 # DS condensation via matching training trajectories
 python tdc_my_version.py
 
-# DS condensation via efficient synthetic data parameterization
+# DS condensation via efficient synthetic data parameterization (without augmentation)
 python edc_my_version.py
 
+# DS condensation via efficient synthetic data parameterization (with augmentation)
+python edc_my_version.py --do_aug True
 
 
 cd..
