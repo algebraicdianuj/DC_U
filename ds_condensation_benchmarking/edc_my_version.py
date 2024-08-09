@@ -19,8 +19,9 @@ from torch.utils.data import Dataset
 import pandas as pd
 from math import ceil
 import os
+import argparse
 
-def main():
+def main(args):
     # Define your network architecture (MLP)
     class MLP(nn.Module):
         def __init__(self, input_size, hidden_size, output_size):
@@ -79,7 +80,7 @@ def main():
     fix_iter = -1  # Authors consider default 1000
     model_epochs=2
     inner_epochs=100   # Authors consider default 100
-    do_condense=False   # Authors consider default as True
+    do_aug=args.do_aug   # Authors consider default as True
     #----------------------------------------------------------------------
 
 
@@ -493,7 +494,7 @@ def main():
                     
                     img_syn,lab_syn = sample(image_syn, label_syn, ipc, c, decode_type, im_size, factor=factor, max_size=max_size)
 
-                    if do_condense:
+                    if do_aug:
                         img_syn = diff_aug(img_syn, strategy='color_crop_cutout_flip_scale_rotate')
     
                     output_real = net.feature(img_real).detach()
@@ -552,4 +553,7 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    parser=argparse.ArgumentParser()
+    parser.add_argument('--do_aug',default=False,required=True,type='str')
+    args=parser.parse_args()
+    main(args)
