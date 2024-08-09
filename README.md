@@ -305,7 +305,7 @@ python tdc_my_version.py
 python edc_my_version.py
 
 # DS condensation via efficient synthetic data parameterization (with augmentation)
-python edc_my_version.py --do_aug True
+python edc_my_version.py --do_aug
 
 
 cd..
