@@ -77,7 +77,7 @@ def main():
     decode_type = 'multi'   # single, multi, bound
     max_size = 128   # Authors consider default 128
     fix_iter = -1  # Authors consider default 1000
-    model_epochs=30
+    model_epochs=2
     inner_epochs=100   # Authors consider default 100
     #----------------------------------------------------------------------
 
@@ -338,7 +338,7 @@ def main():
         #---Starting the condensation process
         for it in range(condense_iterations):
              #------------------Train the Net--------------------------------
-            if it == 0:
+            if it % fix_iter == 0:
                 net= MLP(input_size=channel * im_size[0] * im_size[1], hidden_size=128, output_size=num_classes).to(device)
                 criterion = nn.CrossEntropyLoss()
                 optimizer=torch.optim.Adam(net.parameters(), lr=1e-3)
