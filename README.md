@@ -288,7 +288,7 @@ python fast_dataset_condensation_proposed.py
 python mi_dataset_condensation_proposed.py
 
 # DS distillation via minimax-diffusion
-https://github.com/algebraicdianuj/MinimaxDiffusion.git
+git clone https://github.com/algebraicdianuj/MinimaxDiffusion.git
 cd MinimaxDiffusion
 chmod +x initiator.sh
 chmod +x commands.sh
