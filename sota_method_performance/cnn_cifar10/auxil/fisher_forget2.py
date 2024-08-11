@@ -78,7 +78,7 @@ def get_mean_var(p, is_base_dist=False, alpha=3e-6, num_classes=None, class_to_f
     
     return mu, var
 
-def fischer_forgetting(model, retain_loader, num_classes, device, class_to_forget=None, num_to_forget=None,alpha=1e-7):
+def fisher_forgetting(model, retain_loader, num_classes, device, class_to_forget=None, num_to_forget=None,alpha=1e-7):
     hessian(retain_loader.dataset, model, device, num_classes)
     for p in model.parameters():
         mu, var = get_mean_var(p, False, alpha=alpha, num_classes=num_classes, class_to_forget=class_to_forget, num_to_forget=num_to_forget)
