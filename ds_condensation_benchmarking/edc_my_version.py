@@ -209,15 +209,15 @@ def main(args):
         return train_loader
 
 
-        def diff_aug(x, strategy='color_crop_cutout_flip_scale_rotate', ratio_cutout=0.5, prob_flip=0.5,
-             ratio_scale=1.2, ratio_rotate=15.0, ratio_crop_pad=0.125, brightness=1.0,
-             saturation=2.0, contrast=0.5, single_aug=True, seed=-1):
+    def diff_aug(x, strategy='color_crop_cutout_flip_scale_rotate', ratio_cutout=0.5, prob_flip=0.5,
+                 ratio_scale=1.2, ratio_rotate=15.0, ratio_crop_pad=0.125, brightness=1.0,
+                 saturation=2.0, contrast=0.5, single_aug=True, seed=-1):
     
         def set_seed(seed):
             if seed > 0:
                 np.random.seed(seed)
                 torch.random.manual_seed(seed)
-
+    
         def scale_fn(x):
             sx = torch.rand(x.shape[0], device=x.device) * (ratio_scale - 1.0 / ratio_scale) + 1.0 / ratio_scale
             sy = torch.rand(x.shape[0], device=x.device) * (ratio_scale - 1.0 / ratio_scale) + 1.0 / ratio_scale
@@ -225,7 +225,7 @@ def main(args):
                                 torch.zeros_like(sx), sy, torch.zeros_like(sx)], dim=1).view(-1, 2, 3)
             grid = F.affine_grid(theta, x.shape, align_corners=False)
             return F.grid_sample(x, grid, align_corners=False)
-
+    
         def rotate_fn(x):
             theta = (torch.rand(x.shape[0], device=x.device) - 0.5) * 2 * ratio_rotate / 180 * np.pi
             cos_theta = torch.cos(theta)
@@ -234,25 +234,25 @@ def main(args):
                                 sin_theta, cos_theta, torch.zeros_like(theta)], dim=1).view(-1, 2, 3)
             grid = F.affine_grid(theta, x.shape, align_corners=False)
             return F.grid_sample(x, grid, align_corners=False)
-
+    
         def flip_fn(x):
             randf = torch.rand(x.size(0), 1, 1, 1, device=x.device)
             return torch.where(randf < prob_flip, x.flip(3), x)
-
+    
         def brightness_fn(x):
             randb = torch.rand(x.size(0), 1, 1, 1, dtype=x.dtype, device=x.device)
             return x + (randb - 0.5) * brightness
-
+    
         def saturation_fn(x):
             x_mean = x.mean(dim=1, keepdim=True)
             rands = torch.rand(x.size(0), 1, 1, 1, dtype=x.dtype, device=x.device)
             return (x - x_mean) * (rands * saturation) + x_mean
-
+    
         def contrast_fn(x):
             x_mean = x.mean(dim=[1, 2, 3], keepdim=True)
             randc = torch.rand(x.size(0), 1, 1, 1, dtype=x.dtype, device=x.device)
             return (x - x_mean) * (randc + contrast) + x_mean
-
+    
         def translate_fn(x):
             shift_y = int(x.size(3) * ratio_crop_pad + 0.5)
             translation_y = torch.randint(-shift_y, shift_y + 1, size=[x.size(0), 1, 1], device=x.device)
@@ -264,7 +264,7 @@ def main(args):
             grid_y = torch.clamp(grid_y + translation_y + 1, 0, x.size(3) + 1)
             x_pad = F.pad(x, (1, 1))
             return x_pad.permute(0, 2, 3, 1).contiguous()[grid_batch, grid_x, grid_y].permute(0, 3, 1, 2)
-
+    
         def crop_fn(x):
             shift_x, shift_y = int(x.size(2) * ratio_crop_pad + 0.5), int(x.size(3) * ratio_crop_pad + 0.5)
             translation_x = torch.randint(-shift_x, shift_x + 1, size=[x.size(0), 1, 1], device=x.device)
@@ -278,7 +278,7 @@ def main(args):
             grid_y = torch.clamp(grid_y + translation_y + 1, 0, x.size(3) + 1)
             x_pad = F.pad(x, (1, 1, 1, 1))
             return x_pad.permute(0, 2, 3, 1).contiguous()[grid_batch, grid_x, grid_y].permute(0, 3, 1, 2)
-
+    
         def cutout_fn(x):
             cutout_size = int(x.size(2) * ratio_cutout + 0.5), int(x.size(3) * ratio_cutout + 0.5)
             offset_x = torch.randint(0, x.size(2) + (1 - cutout_size[0] % 2), size=[x.size(0), 1, 1], device=x.device)
@@ -293,7 +293,7 @@ def main(args):
             mask = torch.ones(x.size(0), x.size(2), x.size(3), dtype=x.dtype, device=x.device)
             mask[grid_batch, grid_x, grid_y] = 0
             return x * mask.unsqueeze(1)
-
+    
         aug_fn = {
             'color': [brightness_fn, saturation_fn, contrast_fn],
             'crop': [crop_fn],
@@ -303,10 +303,10 @@ def main(args):
             'rotate': [rotate_fn],
             'translate': [translate_fn],
         }
-
+    
         if strategy == '' or strategy.lower() == 'none':
             return x
-
+    
         strategy_list = strategy.lower().split('_')
         
         for aug in strategy_list:
@@ -318,7 +318,7 @@ def main(args):
                     for f in aug_fn[aug]:
                         set_seed(seed)
                         x = f(x)
-
+    
         return x.contiguous()
     
 
