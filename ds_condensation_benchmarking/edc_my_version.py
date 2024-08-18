@@ -494,7 +494,7 @@ def main(args):
                     
                     img_syn,lab_syn = sample(image_syn, label_syn, ipc, c, decode_type, im_size, factor=factor, max_size=max_size)
 
-                    if do_aug:
+                    if do_aug=='yes':
                         img_syn = diff_aug(img_syn, strategy='color_crop_cutout_flip_scale_rotate')
     
                     output_real = net.feature(img_real).detach()
