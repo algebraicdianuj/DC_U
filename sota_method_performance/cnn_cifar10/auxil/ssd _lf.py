@@ -44,7 +44,7 @@ def calculate_importance(model,dataloader,device):
         optimizer.zero_grad()
         output=model(x)
         # loss=criterion(output,y)
-        loss=torch.norm(output,norm='fro',dim=1)
+        loss=torch.norm(output,p="fro", dim=1)
         loss.backward()
 
         for (k1,p),(k2,imp) in zip (model.named_parameters(),importances.items()):
