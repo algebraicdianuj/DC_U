@@ -1,5 +1,0 @@
-Best-performing attacks over all slices
-  MULTI_LAYERED_PERCEPTRON (with 50000 training and 10000 test examples) achieved an AUC of 0.36 on slice Entire dataset
-  MULTI_LAYERED_PERCEPTRON (with 50000 training and 10000 test examples) achieved an advantage of 0.29 on slice Entire dataset
-  MULTI_LAYERED_PERCEPTRON (with 50000 training and 10000 test examples) achieved a positive predictive value of 0.83 on slice Entire dataset
-  MULTI_LAYERED_PERCEPTRON (with 50000 training and 10000 test examples) achieved top-5 epsilon lower bounds of 1.6642, 1.6641, 1.6640, 1.6627, 1.6627 on slice Entire dataset
