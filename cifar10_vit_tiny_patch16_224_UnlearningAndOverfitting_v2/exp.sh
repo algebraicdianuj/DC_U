@@ -1,0 +1,7 @@
+#!/bin/bash
+
+python unlearn_relative_methods_unlearn_metric.py 1
+python unlearn_relative_methods_unlearn_metric.py 2
+python unlearn_relative_methods_unlearn_metric.py 3
+python unlearn_relative_methods_unlearn_metric.py 4
+python unlearn_relative_methods_unlearn_metric.py 5
